@@ -3,6 +3,19 @@ uuid = "ed60015f-8074-49d8-9504-349d4a9968de"
 authors = ["Fernando Peñaranda"]
 version = "0.1.0"
 
+[deps]
+Arpack = "7d9fca2a-8960-54d3-9f78-7d1dccf2cb97"
+Baselet = "9718e550-a3fa-408a-8086-8db961cd8217"
+CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Parameters = "d96e819e-fc66-5662-9728-84c9c7592b0a"
+PhysicalConstants = "5ad8b20f-a522-5ce9-bfc9-ddf1d5bda6ab"
+Quantica = "ae5ea0c6-3f5e-46a2-bc28-a7c4c7a4773c"
+Requires = "ae029012-a4dd-5104-9daa-d747884805df"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+StatsBase = "2913bbd2-ae8a-5f71-8c99-4fb6c76f3a91"
+VegaLite = "112f6efa-9a02-5b7d-90c0-432ed331239a"
+
 [compat]
 julia = "1"
 
