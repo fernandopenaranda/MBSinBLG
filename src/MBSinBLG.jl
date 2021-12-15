@@ -9,8 +9,10 @@ module MBSinBLG
     
     using PhysicalConstants.CODATA2018: ustrip, @u_str, ħ, k_B, m_e, e, μ_B
 
-    export fig2run(), fig3run(), fig4run(), fig5run(), fig6run(), fig7run()
-    export fig2plot(), fig3plot(), fig4plot(), fig5plot(), fig6plot(), fig7plot()
+    export nanoribbonSA, nanoribbonSZ, Params
+
+    export fig2run, fig3run, fig4run, fig5run, fig6run, fig7run, ldosonlattice
+    export fig2plot, fig3plot, fig4plot, fig5plot, fig6plot, fig7plot
 
     include("model.jl")
     include("nanoribbon.jl")
@@ -24,5 +26,5 @@ module MBSinBLG
     include("fig5.jl")
     include("fig6.jl")
     include("fig7.jl")
-    include("plots.jl")
+    include("figplots.jl")
 end

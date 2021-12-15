@@ -47,7 +47,6 @@ function rectangle_randombounds_sc(p, θ = 0, η = 0.; mono = false, sidecontact
     self_region(r) = ifelse(selfy == false, abs(r[1]) ≥ (round(0.5*Ln/a0)-0.9)*a0,  
         abs(r[1]) ≥ (round(0.5*Ln/a0)-0.9)*a0|| abs(r[2]) ≥ (round(0.5*W/a0)-0.9)*a0)
 
-    # phase = 
     # Superconductivity
     SCo! = @onsite!((o, r) -> o + smooth_method(r) * Δ * σyτy)
     sCself! = @onsite!((o, r) -> o + self_region(r) * Δ * σyτy)
