@@ -162,17 +162,17 @@ end
 #___________________________________________________________________________________________
 # LDOS on lattice Plot 
 
-# ldosonlattice(psi, h0) = vlplot(h0, psi, 
-#     sitesize = DensityShader(), sitecolor = DensityShader(), siteopacity = 0.5,
-#     mindiameter = 1e-1, size = (300), colorscheme = "blues", sitestroke = nothing, 
-#     maxthickness = 0.005, plotlinks = false, discretecolorscheme = :gray,
-#     labels = ("x (nm)", "y (nm)"))
-
 ldosonlattice(psi, h0, scheme = "blues") = vlplot(h0, psi, 
     sitesize = DensityShader(), sitecolor = DensityShader(), siteopacity = 0.5,
     mindiameter = 5e-2, size = (300), colorscheme = scheme, sitestroke = nothing, #reds
     maxdiameter =30, plotlinks = false, discretecolorscheme = :gray, 
-    labels = ("x (nm)", "y (nm)"))
+    labels = ("x (nm)", "y (nm)")) 
+
+# logldosonlattice(psi, h0) = vlplot(h0, -log.(abs.(psi)), 
+#     sitesize = DensityShader(), sitecolor = DensityShader(), siteopacity = 0.5,
+#     mindiameter = maximum(-log.(abs.(psi)))*4/5, size = (300), colorscheme = "blues", sitestroke = nothing,
+#     maxdiameter =maximum(-log.(abs.(psi))), plotlinks = false, discretecolorscheme = :gray, 
+#     labels = ("x (nm)", "y (nm)")) 
 
 latticeplot(psi, h0) = vlplot(h0, psi, 
     sitesize = DensityShader(), sitecolor = DensityShader(), siteopacity = 0.5,

@@ -9,7 +9,7 @@ module MBSinBLG
     
     using PhysicalConstants.CODATA2018: ustrip, @u_str, ħ, k_B, m_e, e, μ_B
 
-    export nanoribbonSA, nanoribbonSZ, Params
+    export nanoribbonSA, nanoribbonSZ, Params, rectangle_squid
 
     export fig2run, fig3run, fig4run, fig5run, fig6run, fig7run, ldosonlattice
     export fig2plot, fig3plot, fig4plot, fig5plot, fig6plot, fig7plot
@@ -19,6 +19,7 @@ module MBSinBLG
     include("bounded_sys.jl")
     include("ldos.jl")
     include("spectrum.jl")
+    include("squid.jl")
     include("save.jl")
     include("fig2.jl")
     include("fig3.jl")

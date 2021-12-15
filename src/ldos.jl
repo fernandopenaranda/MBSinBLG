@@ -68,16 +68,3 @@ function ldosonlattice_rand_sc(p, η, angle = 0; nummodes = 4, selfy = false, kw
         return psi1, psi2
     end
 end
-
-ldosonlattice(psi, h0, scheme = "blues") = vlplot(h0, psi, 
-    sitesize = DensityShader(), sitecolor = DensityShader(), siteopacity = 0.5,
-    mindiameter = 5e-2, size = (300), colorscheme = scheme, sitestroke = nothing, #reds
-    maxdiameter =30, plotlinks = false, discretecolorscheme = :gray, 
-    labels = ("x (nm)", "y (nm)")) 
-
-
-logldosonlattice(psi, h0) = vlplot(h0, -log.(abs.(psi)), 
-    sitesize = DensityShader(), sitecolor = DensityShader(), siteopacity = 0.5,
-    mindiameter = maximum(-log.(abs.(psi)))*4/5, size = (300), colorscheme = "blues", sitestroke = nothing,
-    maxdiameter =maximum(-log.(abs.(psi))), plotlinks = false, discretecolorscheme = :gray, 
-    labels = ("x (nm)", "y (nm)")) 
