@@ -1,17 +1,28 @@
 module MBSinBLG
-# Use README as the docstring of the module:
-@doc read(joinpath(dirname(@__DIR__), "README.md"), String) Quantica
+    # Use README as the docstring of the module:
+    @doc read(joinpath(dirname(@__DIR__), "README.md"), String) Quantica
 
-using Quantica, StaticArrays, Parameters, LinearAlgebra, StatsBase
-using Baselet, Arpack, StaticArrays
+    using Quantica, StaticArrays, Parameters, LinearAlgebra, StatsBase
+    using Baselet, Arpack, StaticArrays, CSV, DataFrames, Dates
+    using Optim, ProgressMeter
+    using Colors, CairoMakie, ElectronDisplay, LaTeXStrings
+    
+    using PhysicalConstants.CODATA2018: ustrip, @u_str, ħ, k_B, m_e, e, μ_B
 
-using Requires
-# function __init__()
-#       @require GLMakie = "e9467ef8-e4e7-5192-8a1a-b1aee30e663a" include("plot_makie.jl")
-#       @require VegaLite = "112f6efa-9a02-5b7d-90c0-432ed331239a" include("plot_vegalite.jl")
-# end
+    export fig2run(), fig3run(), fig4run(), fig5run(), fig6run(), fig7run()
+    export fig2plot(), fig3plot(), fig4plot(), fig5plot(), fig6plot(), fig7plot()
 
-include("model.jl")
-include("random_interface.jl")
-
+    include("model.jl")
+    include("nanoribbon.jl")
+    include("bounded_sys.jl")
+    include("ldos.jl")
+    include("spectrum.jl")
+    include("save.jl")
+    include("fig2.jl")
+    include("fig3.jl")
+    include("fig4.jl")
+    include("fig5.jl")
+    include("fig6.jl")
+    include("fig7.jl")
+    include("plots.jl")
 end

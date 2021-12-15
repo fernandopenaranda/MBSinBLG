@@ -1,76 +1,10 @@
-using Colors
-
-function runfig2()
-    p = Params(Ln = 1440, Ls = 0, scale = 40, U = 1e-7, λ = 10, α = 2, EZ = SA[0, 0, 0], 
-        Δ = 0., μN = 0.);
-    p = reconstruct(p, EZ = SA[0, 0, 0])
-    p_EZ = reconstruct(p, EZ = SA[0, 2.8, 0])
-    smat = fig2bands([p, p, p_EZ, p_EZ], 
-        kmin = -0.15, kmax = .15, kpoints = 301, numbands = 56)
-    writecsv(smat, [p, p, p_EZ, p_EZ], "fig1", ["1", "2", "3", "4"])
-end
-
-
-fig2bands(listp::Array{Params,1}; kw...) =
-    [fig2bands(listp[i]; kw...) for i in 1:length(listp)]
-
-function fig2bands(p, which = "armchair")
-    kpoints = 301
-    numbands = 56
-    if which == "armchair"
-        kmin, kmax = (-2., 2.)
-        axis = (0, 1)
-        h = nanoribbonN(p, axis);
-        b = bandstructure(h, cuboid((-2.,2.), subticks = kpoints),
-            method = ArpackPackage(sigma = -0.00001, nev = numbands));
-    else
-        kmin, kmax = (0., 2pi)
-        axis = (1, 0)
-        h = nanoribbonN(p, axis);
-        b = bandstructure(h, cuboid((0, 2pi), subticks = kpoints), 
-            method = ArpackPackage(sigma = -0.00001, nev = numbands));
-    end
-    karray = collect(range(kmin, kmax, length = kpoints))
-    ϵs = zeros(ComplexF64, numbands, kpoints)
-    for i in 1:length(karray)
-        ϵs[:,i], _ = b.diag((karray[i],))
-    end
-    return karray, ϵs, b
-end
-
-floattostring(vec::Array{Float64,1}) = [floattostring(vec[i]) for i in 1:length(vec)]
-floattostring(i::Float64) = "$(Int(i))"
-function writecsv(vec, p, name, taglist)
-    karray = collect(Iterators.flatten(
-    [   collect(Iterators.flatten([append!([],vec[1][1]) for i in 1:size(vec[1][2],1)])) for j in 1:size(vec,1)]))
-    ϵs = real(collect(Iterators.flatten(
-        [collect(Iterators.flatten([append!([], vec[j][2][i,:]) for i in 1:size(vec[j][2], 1)])) for j in 1:size(vec,1)])))
-    psi = collect(Iterators.flatten(
-        [floattostring([ceil(i/size((vec[1][2]),2)) for i in 1:length(vec[1][2])]) for j in 1:size(vec,1)]))
-    tag = [taglist[Int(ceil(i/length(vec[1][2])))] for i in 1:size(vec,1) * length(vec[1][2])]
-    datafig = DataFrame(tag = tag, karray = karray, ϵs = ϵs, obs = obs, psi = psi)
-    savecsv(name, p, datafig)
-end
-
-function savecsv(figname, p, data::DataFrame,xmin, xlen, xstep, ymin, ylen, ystep, kpoints) 
-    #check and/or create folder structure
-    #r= range(xmin, length = xlen, step = xstep) ok
-    time_str = string(now())
-    isdir("data") ? nothing : mkdir(data)
-    isdir("data/$(figname)") ? nothing : mkdir("data/$(figname)")
-    pathstr = join([pwd(), "/data/$(figname)/", time_str])
-    mkdir(pathstr) 
-    #build the csv.files
-    dict = type2dict(p)
-    push!(dict, :xlen => xlen, :xstep => xstep, :xmin => xmin, :ylen => ylen, :ystep => ystep, :ymin => ymin, :kpoints => kpoints)
-    CSV.write(join([pathstr,"/presets.csv"]), dict)
-    CSV.write(join([pathstr,"/$(figname).csv"]), data; delim = '\t')
-    println(join([pathstr,"/$(figname).csv"]))
-end 
+############################################################################################
+# Figure 2
+############################################################################################
 
 fig2(datapath::String; kw...) = 
-    cairofig1_v4(CSV.read(datapath, DataFrame,  delim = '\t'); kw...)
-function fig2(data; ylims = (-0.015, 0.015))
+    fig2(CSV.read(datapath, DataFrame,  delim = '\t'); kw...)
+function fig2(data; ylims = (-10, 10))
      #remark: if you change the chemical potential in fig2 change the hline
     noto_sans = assetpath("fonts", "NotoSans-Regular.ttf")
     noto_sans_bold = assetpath("fonts", "NotoSans-Bold.ttf")
@@ -98,37 +32,37 @@ function fig2(data; ylims = (-0.015, 0.015))
                 kcros = 0.046
                 datak = data.karray[selection]
                 lines!(ax, data.karray[selection][datak.<=-kcros+.001],
-                     1000 .* data.ϵs[selection][datak.<=-kcros+.001], 
+                      data.ϵs[selection][datak.<=-kcros+.001], 
                     color = ifelse(j != 1000 && 
                     intersect(i,(-1+Int(numbands/2):2+Int(numbands/2)))!=[],
                     :red, customgray),fxaa = true)
 
                 lines!(ax, data.karray[selection][datak.>=kcros-.001],
-                    1000 .* data.ϵs[selection][datak.>=kcros-.001], 
+                     data.ϵs[selection][datak.>=kcros-.001], 
                     color = ifelse(j != 1000 && 
                     intersect(i,(-1+Int(numbands/2):2+Int(numbands/2)))!=[],
                     :red, customgray),fxaa = true)
                 
                 lines!(ax, datak[abs.(datak) .< kcros], 
-                    1000 .* (data.ϵs[selection])[abs.(datak).<kcros], 
+                     (data.ϵs[selection])[abs.(datak).<kcros], 
                     color = ifelse(j != 1000 && 
                     intersect(i,(-3+Int(numbands/2): 4+Int(numbands/2)))!=[],
                     :blue, customgray),fxaa = true)
                 auxvect=collect(0:-2+Int(numbands/2))
                 append!(auxvect, collect(3+Int(numbands/2):numbands))
                 lines!(ax, datak[datak .> kcros], 
-                    1000 .* (data.ϵs[selection])[datak.>kcros], 
+                    (data.ϵs[selection])[datak.>kcros], 
                     color = ifelse(intersect(i, auxvect)!=[], 
                     (customgray, 1), (customgray, 0)), fxaa = true)
                 lines!(ax, datak[datak .< -kcros],
-                    1000 .* (data.ϵs[selection])[datak.<-kcros], 
+                     (data.ϵs[selection])[datak.<-kcros], 
                     color = ifelse(intersect(i, auxvect)!=[], 
                     (customgray, 1), (customgray, 0)), fxaa = true)           
             else
                 if j == 2
                     kcrosr = 0.565
                     kcrosl = 0.435
-                    ϵ = -0.01
+                    ϵ = -10
                 else
                     kcrosr = 0
                     kcrosl = 0
@@ -137,27 +71,27 @@ function fig2(data; ylims = (-0.015, 0.015))
 
                 datak = range(0.2, stop = 0.8, length = length(data.ϵs[selection]))
                 lines!(ax, datak[datak.<= kcrosl], 
-                    1000 .* data.ϵs[selection][datak.<= kcrosl], color = ifelse( 
+                     data.ϵs[selection][datak.<= kcrosl], color = ifelse( 
                     intersect(i,(-1+Int(numbands/2):2+Int(numbands/2)))!=[],
                     :red, (customgray,0)), fxaa = true)
                 lines!(ax, datak[datak.>= kcrosr], 
-                    1000 .* data.ϵs[selection][datak.>= kcrosr], color = ifelse( 
+                     data.ϵs[selection][datak.>= kcrosr], color = ifelse( 
                     intersect(i,(-1+Int(numbands/2):2+Int(numbands/2)))!=[],
                     :red, (customgray,0)), fxaa = true)
                 lines!(ax, datak[kcrosl+ ϵ .<= datak .<= kcrosr- ϵ], 
-                    1000 .* data.ϵs[selection][kcrosl + ϵ .<=datak.<= kcrosr- ϵ],
+                    data.ϵs[selection][kcrosl + ϵ .<=datak.<= kcrosr- ϵ],
                     color = ifelse(intersect(i,(-3+Int(numbands/2):4+Int(numbands/2)))!=[],
                         :blue, customgray), fxaa = true)
 
                 auxvect = [-3,-2,3,4] .+ Int(numbands/2)
                 inter = intersect(i, auxvect)
                 lines!(ax, datak[datak .>= kcrosr ], 
-                    1000 .* (data.ϵs[selection])[datak.>=kcrosr ], 
+                     (data.ϵs[selection])[datak.>=kcrosr ], 
                     color = ifelse(inter!=[], (:blue, 1), 
                         ifelse(findall(x -> x == i, [-1,0,1,2] .+ Int(numbands/2)) == [], 
                         (customgray, 1), (:red,1))), fxaa = true)
                 lines!(ax, datak[datak .<= kcrosl],
-                    1000 .* (data.ϵs[selection])[datak .<= kcrosl], 
+                    (data.ϵs[selection])[datak .<= kcrosl], 
                     color = ifelse(inter!=[], (:blue, 1), 
                         ifelse(findall(x -> x == i, [-1,0,1,2] .+ Int(numbands/2)) == [],
                         (customgray, 1), (:red,1))), fxaa = true)
@@ -189,3 +123,7 @@ function fig2(data; ylims = (-0.015, 0.015))
      colgap!(sub, 1, Relative(-0.01))
     return scene
 end
+
+############################################################################################
+# Figure 3
+############################################################################################
