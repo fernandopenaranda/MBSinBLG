@@ -138,24 +138,36 @@ end
 # Figure 4
 ############################################################################################
 
-function figure4(path)
-    Ez, e = readspectrum(path)
-    return figure4(Ez.EZ, Matrix(e))
+function fig4plot(patha, pathb)
+    Ez, ea = readspectrum(patha)
+    _, eb = readspectrum(pathb)
+    return fig4plot(Ez.EZ, Matrix(ea), Matrix(eb))
 end
-function figure4(Ez, ea,  ylims = (-.15,.15))
-    fig = Figure(resolution = (500, 250), font = "Times New Roman") 
-    axa = Axis(fig[1, 1],  xlabel = L"$E_Z$ [meV]", xaxisposition = :top)
+function fig4plot(Ez, ea, eb,  ylims = (-.1,.1))
+    fig = Figure(resolution = (500, 200), font = "Times New Roman") 
+    axa = Axis(fig[1, 1],  xlabel = L"E_Z [meV]", xaxisposition = :top, 
+    xticks = ([0, 1, 2]), yticks = [-0.1,0,0.1])
+    axb = Axis(fig[1, 2],  xlabel = L"E_Z [meV]", xaxisposition = :top, 
+    xticks = ([0, 1, 2]), yticks = [-0.1,0,0.1])
     lines!(axa, Ez, ea[1,:])
+    lines!(axb, Ez, eb[1,:])
     mean = size(ea, 1) ÷ 2
     println(mean)
     for i in 2:size(ea, 1)
         lines!(axa, Ez, ea[i,:], color = ifelse(in(i, mean-1:mean+2), 
             (:dodgerblue3, 1), :gray), opacity = .5)
+        lines!(axb, Ez, eb[i,:], color = ifelse(in(i, mean-1:mean+2), 
+            (:dodgerblue3, 1), :gray), opacity = .5)
     end
     vlines!(axa, [0.6], color = :black, linewidth = .9, linestyle = :dash)
+    vlines!(axb, [0.6], color = :black, linewidth = .9, linestyle = :dash)
     axa.ylabel = "E [meV]"
+    axb.ylabel = "E [meV]"
     ylims!(axa, ylims)
+    ylims!(axb, ylims)
     xlims!(axa, low = 0, high = 2)
+    xlims!(axb, low = 0, high = 2)
+    hideydecorations!(axb, grid = false)
     fig
 end
 
@@ -164,7 +176,7 @@ end
 
 ldosonlattice(psi, h0, scheme = "blues") = vlplot(h0, psi, 
     sitesize = DensityShader(), sitecolor = DensityShader(), siteopacity = 0.5,
-    mindiameter = 5e-2, size = (300), colorscheme = scheme, sitestroke = nothing, #reds
+    mindiameter = 2e-1, size = (300), colorscheme = scheme, sitestroke = nothing, #reds
     maxdiameter =30, plotlinks = false, discretecolorscheme = :gray, 
     labels = ("x (nm)", "y (nm)")) 
 
@@ -208,16 +220,16 @@ latticeplot(psi, h0) = vlplot(h0, psi,
 # Figure 5
 ############################################################################################
 
-function figure_5(patha, pathb, pathc, pathd)
+function fig5plot(patha, pathb, pathc, pathd)
     Ez, ea = readspectrum(patha)
     _, eb = readspectrum(pathb)
     α, ec = readspectrum(pathc)
     _, ed = readspectrum(pathd)
-    return figure_5(Ez.EZ, α.EZ, Matrix(ea), Matrix(eb), Matrix(ec),  Matrix(ed))
+    return fig5plot(Ez.EZ, α.EZ, Matrix(ea), Matrix(eb), Matrix(ec),  Matrix(ed))
 end
 
 
-function figure_5(Ez, α, ea, eb, ec, ed,  ylims = (-.4,.4))
+function fig5plot(Ez, α, ea, eb, ec, ed,  ylims = (-.4,.4))
     fig = Figure(resolution = (500, 300), font = "Times New Roman") 
     # gb = fig[1:2, 2] = GridLayout
     g = fig[1:2, 1:3] = GridLayout()
@@ -281,13 +293,13 @@ end
 # Figure 6
 ############################################################################################
 
-function figure6(patha, pathb)
+function fig6plot(patha, pathb)
     Ez, ea = readspectrum(patha)
     _, eb = readspectrum(pathb)
-    return figure6(Ez.EZ, Matrix(ea), Matrix(eb))
+    return fig6plot(Ez.EZ, Matrix(ea), Matrix(eb))
 end
 
-function figure6(Ez, ea, eb,  ylims = (-0.4, 0.4))
+function fig6plot(Ez, ea, eb,  ylims = (-0.4, 0.4))
     fig = Figure(resolution = (500, 300), font = "Times New Roman") 
     axa = Axis(fig[1,1])
     axb = Axis(fig[2,1])
@@ -312,13 +324,12 @@ end
 # Figure 7
 ############################################################################################
 
-function figure7(path; kw...)
+function fig7plot(path; kw...)
     ϕs, ea, eb, ec, ed = readcpr(path)
-    return figure7(ϕs.phi, Matrix(ea), Matrix(eb), Matrix(ec), Matrix(ed); kw...)
+    return fig7plot(ϕs.phi, Matrix(ea), Matrix(eb), Matrix(ec), Matrix(ed); kw...)
 end
 
-function figure7(ϕs, ea, eb, ec, ed; ylims = (-0.1, 0.1))
-    
+function fig7plot(ϕs, ea, eb, ec, ed; ylims = (-0.007, 0.007))
     fig = Figure(resolution = (500, 500), font = "Times New Roman") 
     axa = Axis(fig[1,1])
     axb = Axis(fig[1,2])
@@ -331,13 +342,13 @@ function figure7(ϕs, ea, eb, ec, ed; ylims = (-0.1, 0.1))
     lines!(axd, ϕs/π, ed[1,:], color = :gray)
     for i in 2:size(ea, 1)
         lines!(axa, ϕs/π, ea[i,:], color = ifelse(in(i, mean-3:mean+4),
-        ifelse(in(i,[mean-1,mean+2]),  (:dodgerblue3, 1), (:firebrick3, 0.5)), :gray), opacity = .5)
+            ifelse(in(i,mean-1:mean+2),  (:red, 1), (:blue, 0.5)), :gray), opacity = .5)
         lines!(axb, ϕs/π, eb[i,:], color = ifelse(in(i, mean-3:mean+4),
-        ifelse(in(i,[mean-1,mean+2]),  (:dodgerblue3, 1), (:firebrick3, 0.5)), :gray), opacity = .5)
+            ifelse(in(i,mean-1:mean+2),  (:red, 1), (:blue, 0.5)), :gray), opacity = .5)
         lines!(axc, ϕs/π, ec[i,:], color = ifelse(in(i, mean-3:mean+4),
-        ifelse(in(i,[mean-1,mean+2]),  (:dodgerblue3, 1), (:firebrick3, 0.5)), :gray), opacity = .5)
+            ifelse(in(i,mean-1:mean+2),  (:red, 1), (:blue, 0.5)), :gray), opacity = .5)
         lines!(axd, ϕs/π, ed[i,:], color = ifelse(in(i, mean-3:mean+4),
-        ifelse(in(i,[mean-1,mean+2]),  (:dodgerblue3, 1), (:firebrick3, 0.5)), :gray), opacity = .5)
+            ifelse(in(i,mean-1:mean+2),  (:red, 1), (:blue, 0.5)), :gray), opacity = .5)
     end
     axa.ylabel = "E [meV]"
     axa.xlabel = "Δϕ/π"
@@ -351,7 +362,6 @@ function figure7(ϕs, ea, eb, ec, ed; ylims = (-0.1, 0.1))
     ylims!(axb, ylims)
     ylims!(axc, ylims)
     ylims!(axd, ylims)
-
     xlims!(axa, (-2,2))
     xlims!(axb,  (-2,2))
     xlims!(axc,  (-2,2))

@@ -5,11 +5,11 @@ module MBSinBLG
     using Quantica, StaticArrays, Parameters, LinearAlgebra, StatsBase
     using Baselet, Arpack, StaticArrays, CSV, DataFrames, Dates
     using Optim, ProgressMeter
-    using Colors, CairoMakie, ElectronDisplay, LaTeXStrings
+    using Colors, CairoMakie, ElectronDisplay, LaTeXStrings, VegaLite
     
     using PhysicalConstants.CODATA2018: ustrip, @u_str, ħ, k_B, m_e, e, μ_B
 
-    export nanoribbonSA, nanoribbonSZ, Params, rectangle_squid
+    export nanoribbonSA, nanoribbonSZ, Params, rectangle_squid, rectangle_randombounds_sc
 
     export fig2run, fig3run, fig4run, fig5run, fig6run, fig7run, ldosonlattice
     export fig2plot, fig3plot, fig4plot, fig5plot, fig6plot, fig7plot

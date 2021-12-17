@@ -1,7 +1,7 @@
 ## Phase diagram (superconducting, armchair, optim)
 
 function runfig3()
-    p = Params(Ln = 1440, Ls = 0, scale = 40, 
+    p = Params(Ln = 1440, W = 1440, Ls = 0, scale = 40, 
         λ = 5, α = 0, EZ = SA[0, 1e-3, 0], Δ = 0.3, d = 0, τ = 1);
     ha = nanoribbonSA(p);
     hz = nanoribbonSZ(p);

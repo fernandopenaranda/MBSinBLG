@@ -5,7 +5,7 @@ using CSV: write, read
 
 "save data"
 function savepsi(figname, p::Params, psi)
-    path_str = filesstorage_settings()
+    path_str = filesstorage_settings(figname)
     write(join([path_str,"/presets.csv"]), DataFrame(type2dict(p)))
     psi_data = DataFrame(psi = psi)
     write(join([path_str,"/psi.csv"]), psi_data; delim = '\t')
@@ -13,7 +13,7 @@ function savepsi(figname, p::Params, psi)
 end
 
 function savespectrum(figname, p::Params, sp1, sp2)
-    path_str = filesstorage_settings()
+    path_str = filesstorage_settings(figname)
     write(join([path_str,"/presets.csv"]), DataFrame(type2dict(p)))
     write(join([path_str,"/spectrum.csv"]),  DataFrame(sp1, :auto))
     psi_data = DataFrame(EZ = sp2)
@@ -23,7 +23,7 @@ end
 
 "save data"
 function savespectrum(figname, p::Params, sp::Quantica.Spectrum)
-    path_str = filesstorage_settings()
+    path_str = filesstorage_settings(figname)
     write(join([path_str,"/presets.csv"]), DataFrame(type2dict(p)))
     psi_data = DataFrame(psi = sp.states[:,1])
     write(join([path_str,"/psi.csv"]), psi_data; delim = '\t')
@@ -31,7 +31,7 @@ function savespectrum(figname, p::Params, sp::Quantica.Spectrum)
 end
 
 function savecprs(figname, p::Params, phi, ea, eb, ec, ed)
-    path_str = filesstorage_settings()
+    path_str = filesstorage_settings(figname)
     write(join([path_str,"/presets.csv"]), DataFrame(type2dict(p)))
     phi_data = DataFrame(phi = collect(phi))
     write(join([path_str,"/phi.csv"]), phi_data; delim = '\t')
@@ -43,7 +43,7 @@ function savecprs(figname, p::Params, phi, ea, eb, ec, ed)
 end
 
 """ check and/or create folder structure"""
-function filesstorage_settings()
+function filesstorage_settings(figname)
     time_str = string(now())
     isdir("data") ? nothing : mkdir("data")
     isdir("data/$(figname)") ? nothing : mkdir("data/$(figname)")
@@ -83,7 +83,7 @@ end
 
 
 #read
-function readfig3data(datapath::String, angle = 0*pi/180)
+function readfig4data(datapath::String, angle = 0*pi/180)
     println("hey")
     presets = read(joinpath(datapath,"presets.csv"), DataFrame,  delim = '\t')
     println(presets)
@@ -91,7 +91,7 @@ function readfig3data(datapath::String, angle = 0*pi/180)
     return  map(x->parse(ComplexF64,x), data.psi)
 end
 
-function readfig3psi(datapath::String)
+function readfig4psi(datapath::String)
     presets = read(joinpath(datapath,"presets.csv"), DataFrame,  delim = '\t')
     data = read(joinpath(datapath,"psi.csv"), DataFrame, delim='\t')
     return  data.psi
