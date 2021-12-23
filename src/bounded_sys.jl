@@ -23,7 +23,7 @@ function rectangle_randombounds_sc(p, θ = 0, η = 0.; sidecontacts = false,
     end
     # lat = unitcell(lat0, region = myreg)
     lat = unitcell(lat0, 
-        region = (r) -> r[1]> -Ln/2 && r[1]< Ln/2-0*1/2*a0 && r[2] < W/2 && r[2]> -W/2)
+        region = (r) -> r[1]> -Ln/2 && r[1]< Ln/2 && r[2] < W/2 && r[2]> -W/2)
     
     regionS(r) = abs(r[1]) >= Ln/2 || abs(r[2]) >= W/2
     regionS(r, dr) = regionS(r)
@@ -43,15 +43,14 @@ function rectangle_randombounds_sc(p, θ = 0, η = 0.; sidecontacts = false,
     so_rand! = @onsite!((o, r) -> o + rand_region(r) * ifelse(η != 0, 1e3, 0) *
         random_mat())
     # local self energy model
-    
-    # self_region(r) = ifelse(selfy == false, abs(r[1]) ≥ (round(0.5*Ln/a0)-0.9)*a0,  
-    # abs(r[1]) ≥ (round(0.5*Ln/a0)-0.9)*a0|| r[2] ≥ atan(θ)*(r[1]-0.5*Ln/a0) +
-    #     (round(0.5*W/a0)-2)*a0 || r[2] ≤ atan(θ)*(r[1]-0.5*Ln/a0) -(round(0.5*W/a0)-2)*a0 ) 
-
-
     self_region(r) = ifelse(selfy == false, abs(r[1]) ≥ (round(0.5*Ln/a0)-0.9)*a0,  
-    r[1] ≤ -tan(θ)*r[2]-(round(0.5*Ln/a0)-2)*a0 ||   r[1] ≥ -tan(θ)*r[2]+(round(0.5*Ln/a0)-2)*a0 || r[2] ≥ tan(θ)*(r[1]-0.5*Ln/a0) +
-        (round(0.5*W/a0)-2)*a0 || r[2] ≤ tan(θ)*(r[1]-0.5*Ln/a0) -(round(0.5*W/a0)-2)*a0 ) 
+        # r[1]> -Ln/2 && r[1]< Ln/2 && r[2] < W/2 && r[2]> -W/2)
+        abs(r[1]) ≥ (round(0.5*Ln/a0)-3)*a0 || abs(r[2]) ≥ (round(0.5*W/a0)-3)*a0)
+
+    # self_region(r) = ifelse(selfy == false, abs(r[1]) ≥ (round(0.5*Ln/a0)-0.9)*a0,  
+    # r[1] ≤ -tan(θ)*r[2]-(round(0.5*Ln/a0)-2)*a0 ||  
+    # r[1] ≥ -tan(θ)*r[2]+(round(0.5*Ln/a0)-2)*a0 || r[2] ≥ tan(θ)*(r[1]-0.5*Ln/a0) +
+    #     (round(0.5*W/a0)-2)*a0 || r[2] ≤ tan(θ)*(r[1]-0.5*Ln/a0) -(round(0.5*W/a0)-2)*a0 ) 
 
 
     diagphi(ϕ) = Diagonal(SA[cis(ϕ), cis(ϕ), cis(-ϕ), cis(-ϕ)])
