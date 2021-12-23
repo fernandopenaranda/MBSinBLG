@@ -321,7 +321,7 @@ function fig6plot(Ez, ea, eb,  ylims = (-0.2, 0.2))
     xlims!(axb, (0, 5))
     hidexdecorations!(axa, grid = false)
     ylims!(axa, ylims)
-    ylims!(axb, (-0.05,0.05))
+    ylims!(axb, ylims)#(-0.05,0.05))
     fig
 end
 
