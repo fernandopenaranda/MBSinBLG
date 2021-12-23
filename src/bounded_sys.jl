@@ -45,7 +45,7 @@ function rectangle_randombounds_sc(p, θ = 0, η = 0.; sidecontacts = false,
     # local self energy model
     self_region(r) = ifelse(selfy == false, abs(r[1]) ≥ (round(0.5*Ln/a0)-0.9)*a0,  
         # r[1]> -Ln/2 && r[1]< Ln/2 && r[2] < W/2 && r[2]> -W/2)
-        abs(r[1]) ≥ (round(0.5*Ln/a0)-3)*a0 || abs(r[2]) ≥ (round(0.5*W/a0)-3)*a0)
+        abs(r[1]) ≥ (round(0.5*Ln/a0)-10)*a0 || abs(r[2]) ≥ (round(0.5*W/a0)-10)*a0)
 
     # self_region(r) = ifelse(selfy == false, abs(r[1]) ≥ (round(0.5*Ln/a0)-0.9)*a0,  
     # r[1] ≤ -tan(θ)*r[2]-(round(0.5*Ln/a0)-2)*a0 ||  
