@@ -4,7 +4,7 @@ module MBSinBLG
 
     using Quantica, StaticArrays, Parameters, LinearAlgebra, StatsBase
     using Baselet, Arpack, StaticArrays, CSV, DataFrames, Dates
-    using Optim, ProgressMeter, Distributed
+    using Optim, ProgressMeter, Distributed, SharedArrays
     using PhysicalConstants.CODATA2018: ustrip, @u_str, ħ, k_B, m_e, e, μ_B
     
     using Colors, CairoMakie, ElectronDisplay, LaTeXStrings, VegaLite

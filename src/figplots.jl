@@ -421,12 +421,12 @@ function scbands(p, which = "armchair")
     return a
 end
 
-function scbands(p, angle)
-    kpoints = 51
-    numbands = 32
-    axis = (14, 1)
-    h = nanoribbonS(p, axis);
-    b = bandstructure(h, cuboid((0, 2pi), subticks = kpoints), 
-            method = ArpackPackage(sigma = -0.00001, nev = numbands))
-    return vlplot(b, ylims = (-10, 10), size = (300))
-end
+# function scbands(p, angle)
+#     kpoints = 51
+#     numbands = 32
+#     axis = (14, 1)
+#     h = nanoribbonS(p, axis);
+#     b = bandstructure(h, cuboid((0, 2pi), subticks = kpoints), 
+#             method = ArpackPackage(sigma = -0.00001, nev = numbands))
+#     return vlplot(b, ylims = (-10, 10), size = (300))
+# end
