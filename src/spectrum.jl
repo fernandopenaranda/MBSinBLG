@@ -68,17 +68,21 @@ end
 
 "given somre presets and a list of angles (in degrees) computes the spectrum of the 
 lowest energy states as a funcion of θ"
-function splittingvsrotation(p, list, selfy = true)
+function splittingvsrotation(p, list, selfy = true; kw...)
     list = list .* π/180
-    h = rectangle_randombounds_sc(p, list[1], 0.0, sidecontacts = true, selfy = selfy)
-    sp = spectrum(h, method = ArpackPackage(nev = 32, sigma = 0.0im))
-    energieslist = zeros(Float64, length(sp.energies), length(list))
+    println("first h...")
+    h = rectangle_randombounds_sc(p, list[1], 0.0, sidecontacts = true, selfy = selfy; kw...)
+    println("first sp...")
+    sp = spectrum(h, method = ArpackPackage(nev = 16, sigma = 0.0im))
+    energieslist = SharedArray(zeros(Float64, length(sp.energies), length(list)))
     energieslist[:,1] = sp.energies
-    for i in 2:length(list) #@sync @distributed 
+    @sync @distributed for i in 2:length(list) 
         println(i/length(list))
-        h = rectangle_randombounds_sc(p, list[i], 0.0, sidecontacts = true, selfy = selfy)
-        sp = spectrum(h,
-            method = ArpackPackage(nev = 32, sigma = 0.0im))
+        println("h ...")
+        hn = rectangle_randombounds_sc(p, list[i], 0.0, sidecontacts = true, selfy = selfy; kw...)
+        println("sp...")
+        spn = spectrum(h,
+            method = ArpackPackage(nev = 16, sigma = 0.0im))
         energieslist[:,i] = sp.energies
     end
     return energieslist, list

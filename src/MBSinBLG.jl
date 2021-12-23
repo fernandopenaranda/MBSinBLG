@@ -1,15 +1,16 @@
 module MBSinBLG
     # Use README as the docstring of the module:
-    @doc read(joinpath(dirname(@__DIR__), "README.md"), String) Quantica
+    @doc read(joinpath(dirname(@__DIR__), "README.md"), String) MBSinBLG
 
     using Quantica, StaticArrays, Parameters, LinearAlgebra, StatsBase
     using Baselet, Arpack, StaticArrays, CSV, DataFrames, Dates
-    using Optim, ProgressMeter
-    using Colors, CairoMakie, ElectronDisplay, LaTeXStrings, VegaLite
-    
+    using Optim, ProgressMeter, Distributed
     using PhysicalConstants.CODATA2018: ustrip, @u_str, ħ, k_B, m_e, e, μ_B
+    
+    using Colors, CairoMakie, ElectronDisplay, LaTeXStrings, VegaLite
 
-    export nanoribbonSA, nanoribbonSZ, Params, rectangle_squid, rectangle_randombounds_sc
+    export nanoribbonS, nanoribbonSA, nanoribbonSZ, Params, rectangle_squid, 
+        rectangle_randombounds_sc
 
     export fig2run, fig3run, fig4run, fig5run, fig6run, fig7run, ldosonlattice
     export fig2plot, fig3plot, fig4plot, fig5plot, fig6plot, fig7plot

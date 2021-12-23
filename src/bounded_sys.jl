@@ -9,11 +9,12 @@ of atom vacancies in the edges.
 we can control the rotation of the lattices w.r.t the SC using the keyword `θ`"
 
 function rectangle_randombounds_sc(p, θ = 0, η = 0.; sidecontacts = false, 
-        selfy = false, mono = false)
+        selfy = false, mono = false, ϕ0 = 0)
     (; Ln, Ls, Δ, a0, τ, d, W) = p
     (; model0, field!) = modelS(p)
     lat0 = mono ? latSLG(p) : latBLG(p)
-    Quantica.transform!(r -> SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * r, lat0)
+    rot(r) = SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * r
+    Quantica.transform!(r -> rot(r), lat0)
     # contact model (Josephson vs rectangular mask architectures)
     if sidecontacts == true
         myreg = RP.rectangle( (Ln + 2Ls, W))
@@ -42,14 +43,15 @@ function rectangle_randombounds_sc(p, θ = 0, η = 0.; sidecontacts = false,
     so_rand! = @onsite!((o, r) -> o + rand_region(r) * ifelse(η != 0, 1e3, 0) *
         random_mat())
     # local self energy model
+    # self_region(r) = ifelse(selfy == false, abs(r[1]) ≥ (round(0.5*Ln/a0)-0.9)*a0,  
+    #     abs(r[1]) ≥ (round(0.5*Ln/a0)-0.9)*a0|| abs(rot(r)[2]) ≥ (round(0.5*W/a0)-2)*a0)
+
     self_region(r) = ifelse(selfy == false, abs(r[1]) ≥ (round(0.5*Ln/a0)-0.9)*a0,  
-        abs(r[1]) ≥ (round(0.5*Ln/a0)-0.9)*a0|| abs(r[2]) ≥ (round(0.5*W/a0)-0.9)*a0)
+    abs(r[1]) ≥ (round(0.5*Ln/a0)-0.9)*a0|| r[2] ≥ atan(θ)*(r[1]-0.5*Ln/a0) +
+        (round(0.5*W/a0)-2)*a0 || r[2] ≤ atan(θ)*(r[1]-0.5*Ln/a0) -(round(0.5*W/a0)-2)*a0 ) ##
 
-
-    # temp !!!!!!!
-    println("temP")
     diagphi(ϕ) = Diagonal(SA[cis(ϕ), cis(ϕ), cis(-ϕ), cis(-ϕ)])
-        sCself! = @onsite!((o, r; ϕ) -> o + 
+    sCself! = @onsite!((o, r; ϕ) -> o + 
             self_region(r) * Δ * diagphi(sign(r[1])* ϕ/4) * σyτy * diagphi(sign(r[1])*ϕ/4)')     
     # Superconductivity
     SCo! = @onsite!((o, r) -> o + smooth_method(r) * Δ * σyτy)
@@ -61,5 +63,5 @@ function rectangle_randombounds_sc(p, θ = 0, η = 0.; sidecontacts = false,
     #building the hamiltonian
     ph = lat |> hamiltonian(model0; orbitals = Val(4)) |> 
         parametric(field!, so_rand!, SCo!, sCself!, SCh!, SCτ!)
-    return ph(ϕ = π)# ph()
+    return ph(ϕ = ϕ0)# ph()
 end

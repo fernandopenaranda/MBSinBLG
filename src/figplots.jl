@@ -296,27 +296,32 @@ end
 function fig6plot(patha, pathb)
     Ez, ea = readspectrum(patha)
     _, eb = readspectrum(pathb)
-    return fig6plot(Ez.EZ, Matrix(ea), Matrix(eb))
+    return Ez, ea, eb#fig6plot(Ez.EZ, Matrix(ea), Matrix(eb))
 end
 
-function fig6plot(Ez, ea, eb,  ylims = (-0.4, 0.4))
-    fig = Figure(resolution = (500, 300), font = "Times New Roman") 
-    axa = Axis(fig[1,1])
-    axb = Axis(fig[2,1])
+function fig6plot(Ez, ea, eb,  ylims = (-0.2, 0.2))
+    fig = Figure(resolution = (250, 500), font = "Times New Roman") 
+    axa = Axis(fig[1, 1], yaxisposition = :right)
+    axb = Axis(fig[2, 1], yaxisposition = :right)
     mean = size(ea, 1) ÷ 2
-    lines!(axa, 180/π .* Ez, ea[1,:])
-    lines!(axb, 180/π .* Ez, eb[1,:])
+    lines!(axa, 180/π .* Ez, ea[1,:], color = :gray, yaxisposition = :right)
+    lines!(axb, 180/π .* Ez, eb[1,:], color = :gray, yaxisposition = :right)
     for i in 2:size(ea, 1)
         lines!(axa, 180/π .*Ez, ea[i,:], color = ifelse(in(i, mean-3:mean+4), 
-        ifelse(in(i,[mean-1,mean+2]),  (:dodgerblue3, 1), (:firebrick3, 0.5)), :gray), opacity = .5)
-        lines!(axb, 180/π .*Ez, eb[i,:], color = ifelse(in(i, mean-3:mean+4), 
-        ifelse(in(i,[mean-1,mean+2]),  (:dodgerblue3, 1), (:firebrick3, 0.5)), :gray), opacity = .5)
+            ifelse(in(i,mean-1:mean+2),  (:red, 1), (:blue, 0.6)), :gray), opacity = .5, 
+            yaxisposition = :right)
+        lines!(axb, 180/π .*Ez, eb[i,:], color = ifelse(in(i, mean-1:mean+2), 
+            :red, :gray), opacity = .5, yaxisposition = :right)
     end
-    axb.xlabel = " θ  [degrees]"
+    axa.xlabel = " θ  [°]"
+    axb.xlabel = " θ  [°]"
     axa.ylabel = "E [meV]"
     axb.ylabel = "E [meV]"
+    xlims!(axa, (0, 5))
+    xlims!(axb, (0, 5))
     hidexdecorations!(axa, grid = false)
     ylims!(axa, ylims)
+    ylims!(axb, (-0.05,0.05))
     fig
 end
 
@@ -414,4 +419,14 @@ function scbands(p, which = "armchair")
         a = vlplot(b, ylims = (-10, 10), size = (300))
     end
     return a
+end
+
+function scbands(p, angle)
+    kpoints = 51
+    numbands = 32
+    axis = (14, 1)
+    h = nanoribbonS(p, axis);
+    b = bandstructure(h, cuboid((0, 2pi), subticks = kpoints), 
+            method = ArpackPackage(sigma = -0.00001, nev = numbands))
+    return vlplot(b, ylims = (-10, 10), size = (300))
 end

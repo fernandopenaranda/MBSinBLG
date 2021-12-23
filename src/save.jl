@@ -99,6 +99,7 @@ end
 
 function readspectrum(datapath::String)
     y = read(join([datapath,"/spectrum.csv"]), DataFrame)
+    println("hey")
     x = read(join([datapath,"/EZ.csv"]), DataFrame)
     return x, y
 end
