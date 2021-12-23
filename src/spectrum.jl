@@ -34,7 +34,7 @@ end
 
 function spectrumsweepb(p, blist, selfy = false)
     pn = reconstruct(p, EZ = SA[0, blist[1], 0])
-    h = rectangle_randombounds_sc(pn, 0, 0.0, sidecontacts = true, selfy = selfy)
+    h = rectangle_randombounds_sc(pn, 0., 0.0, sidecontacts = true, selfy = selfy)
     sp = spectrum(h, method = ArpackPackage(nev = 32, sigma = 0.0im))
     energieslist = zeros(Float64, length(sp.energies), length(blist))
     energieslist[:,1] = sp.energies

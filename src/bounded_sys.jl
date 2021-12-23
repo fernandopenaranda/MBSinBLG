@@ -50,7 +50,7 @@ function rectangle_randombounds_sc(p, θ = 0, η = 0.; sidecontacts = false,
 
 
     self_region(r) = ifelse(selfy == false, abs(r[1]) ≥ (round(0.5*Ln/a0)-0.9)*a0,  
-    r[1] ≤ -tan(θ)*r[2]-(round(0.5*Ln/a0)-0.9)*a0 ||   r[1] ≥ -tan(θ)*r[2]+(round(0.5*Ln/a0)-0.9)*a0 || r[2] ≥ tan(θ)*(r[1]-0.5*Ln/a0) +
+    r[1] ≤ -tan(θ)*r[2]-(round(0.5*Ln/a0)-2)*a0 ||   r[1] ≥ -tan(θ)*r[2]+(round(0.5*Ln/a0)-2)*a0 || r[2] ≥ tan(θ)*(r[1]-0.5*Ln/a0) +
         (round(0.5*W/a0)-2)*a0 || r[2] ≤ tan(θ)*(r[1]-0.5*Ln/a0) -(round(0.5*W/a0)-2)*a0 ) 
 
 
