@@ -10,7 +10,7 @@ module MBSinBLG
     using Colors, CairoMakie, ElectronDisplay, LaTeXStrings, VegaLite
 
     export nanoribbonS, nanoribbonSA, nanoribbonSZ, Params, rectangle_squid, 
-        rectangle_randombounds_sc, splittingvsrotation
+        rectangle_randombounds_sc, splittingvsrotation, savespectrum
 
     export fig2run, fig3run, fig4run, fig5run, fig6run, fig7run, ldosonlattice
     export fig2plot, fig3plot, fig4plot, fig5plot, fig6plot, fig7plot
