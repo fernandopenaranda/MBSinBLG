@@ -1,9 +1,9 @@
 using Distributed 
-addprocs(2)
+addprocs(3)
 @everywhere using MBSinBLG
 # using MKL
 # BLAS.set_num_threads(2)
-@everuwhere using MKL
+@everywhere using MKL, SharedArrays
 @everywhere using Quantica, StaticArrays, Parameters, LinearAlgebra, StatsBase
 @everywhere using Baselet, Arpack, StaticArrays, CSV, DataFrames, Dates
 @everywhere using Optim, ProgressMeter, Distributed
