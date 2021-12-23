@@ -70,6 +70,7 @@ end
 lowest energy states as a funcion of θ"
 function splittingvsrotation(p, list, selfy = true; kw...)
     list = list .* π/180
+    sharedlist = SharedArray(list)
     println("first h...")
     h = rectangle_randombounds_sc(p, list[1], 0.0, sidecontacts = true, selfy = selfy; kw...)
     println("first sp...")
@@ -79,6 +80,7 @@ function splittingvsrotation(p, list, selfy = true; kw...)
     @sync @distributed for i in 2:length(list) 
         println(i/length(list))
         println("h ...")
+        prinln("angle: ", list[i] )
         hn = rectangle_randombounds_sc(p, list[i], 0.0, sidecontacts = true, selfy = selfy; kw...)
         println("sp...")
         spn = spectrum(h,
