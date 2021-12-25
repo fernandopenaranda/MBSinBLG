@@ -43,10 +43,10 @@ function runfig6()
     savespectrum("fig6", p, sp[1], sp[2])
 
 
-    sp = splittingvsdisorder(reconstruct(p, Ln = 400, W = 2000, EZ = SA[0, 2, 0]), 0:0.01:0.5, true, ϕ0 = pi)
+    sp = splittingvsdisorder(reconstruct(p, Ln = 400, W = 2000, EZ = SA[0, 2, 0]), 0:0.02:0.5, true, ϕ0 = pi)
     savespectrum("fig6testdisorder2", p, sp[1], sp[2])
 
-    sp = splittingvsdisorder(reconstruct(p, Ln = 400, W = 2000, EZ = SA[0, 5, 0]), 0:0.01:0.5, true, ϕ0 = pi)
+    sp = splittingvsdisorder(reconstruct(p, Ln = 400, W = 2000, EZ = SA[0, 5, 0]), 0:0.02:0.5, true, ϕ0 = pi)
     savespectrum("fig6testdisorder5", p, sp[1], sp[2])
    
 end
