@@ -461,11 +461,11 @@ function scbands(p, angle)
     nx = denominator(int_frac)
     ny = numerator(int_frac)
     kpoints = 51
-    numbands = 32
-    axis = (nx, ny)
+    numbands = 16
+    axis = (ny, nx)
     h = nanoribbonS(p, axis);
-   return vlplot(h, maxdiameter = 4, plotlinks = false)
-    # b = bandstructure(h, cuboid((0, 2pi), subticks = kpoints), 
-    #         method = ArpackPackage(sigma = -0.00001, nev = numbands))
-    # return vlplot(b, ylims = (-10, 10), size = (300))
+#    return vlplot(h, maxdiameter = 4, plotlinks = false)
+    b = bandstructure(h, cuboid((-6, 6), subticks = kpoints), 
+            method = ArpackPackage(sigma = -0.00001, nev = numbands))
+    return vlplot(b, ylims = (-10, 10), size = (300))
 end

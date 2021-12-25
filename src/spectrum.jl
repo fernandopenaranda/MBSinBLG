@@ -91,7 +91,6 @@ end
 
 
 function splittingvsdisorder(p, list, selfy = true; kw...)
-    list = list .* π/180
     println("first h...")
     h = rectangle_randombounds_sc(p, 0.0, list[1], sidecontacts = true, selfy = selfy; kw...)
     println("first sp...")
@@ -100,7 +99,7 @@ function splittingvsdisorder(p, list, selfy = true; kw...)
     energieslist[:,1] = sp.energies
     @sync @distributed for i in 2:length(list) 
         println(i/length(list))
-        println("list[i] ...")
+        println("$(list[i])...")
         hn = rectangle_randombounds_sc(p, 0.0, list[i], sidecontacts = true, selfy = selfy; kw...)
         println("sp...")
         spn = spectrum(hn,
