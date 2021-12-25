@@ -15,29 +15,40 @@ function runfig6()
     data = ldosonlattice_averaged_sc(p, presets_fig)
     savepsi("fig6", p, data[1])
     
-    p = reconstruct(p, EZ = SA[0, 2, 0])
-    presets_fig = Fig4_presets(0.005, π/180, 0, 8, true)
-    data1 = ldosonlattice_averaged_sc(p, presets_fig)
-    data2 = ldosonlattice_averaged_sc(p, presets_fig)
-    data3 = ldosonlattice_averaged_sc(p, presets_fig)
-    data4 = ldosonlattice_averaged_sc(p, presets_fig)
-    data5 = ldosonlattice_averaged_sc(p, presets_fig)
+    # p = reconstruct(p, EZ = SA[0, 2, 0])
+    # presets_fig = Fig4_presets(0.005, π/180, 0, 8, true)
+    # data1 = ldosonlattice_averaged_sc(p, presets_fig)
+    # data2 = ldosonlattice_averaged_sc(p, presets_fig)
+    # data3 = ldosonlattice_averaged_sc(p, presets_fig)
+    # data4 = ldosonlattice_averaged_sc(p, presets_fig)
+    # data5 = ldosonlattice_averaged_sc(p, presets_fig)
 
-    #presets_fig = Fig4_presets(0.005, π/180, 5, 8, true)
+    p = reconstruct(p, EZ = SA[0, 2, 0])
+    presets_fig = Fig4_presets(0.005, π/180, 19, 8, true)
     data = ldosonlattice_averaged_sc(p, presets_fig)
     savepsi("fig6", p, data[1])
     savepsi("fig6", p, data[2])
 
     p = reconstruct(p, EZ = SA[0, 4, 0])
-    presets_fig = Fig4_presets(0.005, π/180, 5, 4, true)
+    presets_fig = Fig4_presets(0.005, π/180, 19, 4, true)
     data = ldosonlattice_averaged_sc(p, presets_fig)
     savepsi("fig6", p, data[1])
 
-    sp = splittingvsrotation(reconstruct(p, Ln = 400, W = 1440, EZ = SA[0, 2, 0]), 0:.25:5, true, ϕ0 = 0)
+    
+    sp = splittingvsrotation(reconstruct(p, Ln = 800, W = 2000, EZ = SA[0, 2, 0]), 0:.25:5, true, ϕ0 = pi)
     savespectrum("fig6", p, sp[1], sp[2])
 
-    sp = splittingvsrotation(reconstruct(p, Ln = 1440, W = 1440, EZ = SA[0, 4, 0]), 0:.25:5, true, ϕ0 = 0)
+
+    sp = splittingvsrotation(reconstruct(p, Ln = 800, W = 2000, EZ = SA[0, 5, 0]), 0:.25:5, true, ϕ0 = pi)
     savespectrum("fig6", p, sp[1], sp[2])
+
+
+    sp = splittingvsdisorder(reconstruct(p, Ln = 400, W = 2000, EZ = SA[0, 2, 0]), 0:0.01:0.5, true, ϕ0 = pi)
+    savespectrum("fig6testdisorder2", p, sp[1], sp[2])
+
+    sp = splittingvsdisorder(reconstruct(p, Ln = 400, W = 2000, EZ = SA[0, 5, 0]), 0:0.01:0.5, true, ϕ0 = pi)
+    savespectrum("fig6testdisorder5", p, sp[1], sp[2])
+   
 end
 
 

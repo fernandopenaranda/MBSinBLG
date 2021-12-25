@@ -88,6 +88,28 @@ function splittingvsrotation(p, list, selfy = true; kw...)
     return energieslist, list
 end
 
+
+
+function splittingvsdisorder(p, list, selfy = true; kw...)
+    list = list .* π/180
+    println("first h...")
+    h = rectangle_randombounds_sc(p, 0.0, list[1], sidecontacts = true, selfy = selfy; kw...)
+    println("first sp...")
+    sp = spectrum(h, method = ArpackPackage(nev = 16, sigma = 0.0im))
+    energieslist = SharedArray(zeros(Float64, length(sp.energies), length(list)))
+    energieslist[:,1] = sp.energies
+    @sync @distributed for i in 2:length(list) 
+        println(i/length(list))
+        println("list[i] ...")
+        hn = rectangle_randombounds_sc(p, 0.0, list[i], sidecontacts = true, selfy = selfy; kw...)
+        println("sp...")
+        spn = spectrum(hn,
+            method = ArpackPackage(nev = 16, sigma = 0.0im))
+        energieslist[:,i] = spn.energies
+    end
+    return energieslist, list
+end
+
 # function merge_max2(a, b)
 #     x, y = Baselet.sort((a..., b...); by = last, rev = true)
 #     return (x, y)

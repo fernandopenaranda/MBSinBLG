@@ -1,5 +1,5 @@
 using Distributed 
-addprocs(3)
+addprocs(1)
 @everywhere using MBSinBLG
 # using MKL
 # BLAS.set_num_threads(2)

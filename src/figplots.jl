@@ -317,8 +317,8 @@ function fig6plot(Ez, ea, eb,  ylims = (-0.2, 0.2))
     axb.xlabel = " θ  [°]"
     axa.ylabel = "E [meV]"
     axb.ylabel = "E [meV]"
-    xlims!(axa, (0, 5))
-    xlims!(axb, (0, 5))
+    # xlims!(axa, (0, 5))
+    # xlims!(axb, (0, 5))
     hidexdecorations!(axa, grid = false)
     ylims!(axa, ylims)
     ylims!(axb, ylims)#(-0.05,0.05))
@@ -378,7 +378,41 @@ function fig7plot(ϕs, ea, eb, ec, ed; ylims = (-0.007, 0.007))
     fig
 end
 
+#########
+# Supplementary: FigSA
+########
 
+function figSAplot(patha, pathb)
+    Ez, ea = readspectrum(patha)
+    _, eb = readspectrum(pathb)
+    return Ez, ea, eb#fig6plot(Ez.EZ, Matrix(ea), Matrix(eb))
+end
+
+function figSAplot(η, ea, eb,  ylims = (-0.2, 0.2), ylimsb = (-0.2, 0.2))
+    fig = Figure(resolution = (500, 250), font = "Times New Roman") 
+    axa = Axis(fig[1, 1], yaxisposition = :left)
+    axb = Axis(fig[1, 2], yaxisposition = :left)
+    mean = size(ea, 1) ÷ 2
+    lines!(axa,  η, ea[1,:], color = :gray, yaxisposition = :left)
+    lines!(axb, η, eb[1,:], color = :gray, yaxisposition = :left)
+    for i in 2:size(ea, 1)
+        lines!(axa, η, ea[i,:], color = ifelse(in(i, mean-3:mean+4), 
+            ifelse(in(i,mean-1:mean+2), (:red, 1), (:blue, 0.4)), :gray), opacity = .5, 
+            yaxisposition = :right)
+        lines!(axb, η, eb[i,:], color = ifelse(in(i, mean-1:mean+2), 
+            :red, :gray), opacity = .5, yaxisposition = :right)
+    end
+    axa.xlabel = " η"
+    axb.xlabel = " η"
+    axa.ylabel = "E [meV]"
+    axb.ylabel = "E [meV]"
+    xlims!(axa, (0, maximum(η)))
+    xlims!(axb, (0, maximum(η)))
+    hideydecorations!(axb, grid = false)
+    ylims!(axa, ylims)
+    ylims!(axb, ylimsb)
+    fig
+end
 
 
 #########
