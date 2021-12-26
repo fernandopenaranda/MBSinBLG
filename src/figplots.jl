@@ -456,6 +456,17 @@ function scbands(p, which = "armchair")
 end
 
 "angle in degrees "
+
+function scbands(p, (nx, ny))
+    kpoints = 51
+    numbands = 16
+    axis = (ny, nx)
+    h = nanoribbonS(p, axis);
+#    return vlplot(h, maxdiameter = 4, plotlinks = false)
+    b = bandstructure(h, cuboid((-6, 6), subticks = kpoints), 
+            method = ArpackPackage(sigma = -0.0000, nev = numbands))
+    return vlplot(b, ylims = (-4, 4), size = (300))
+end
 function scbands(p, angle)
     int_frac = rationalize(tan(angle*pi/180), tol = 1e-3)
     nx = denominator(int_frac)

@@ -16,13 +16,13 @@ function nanoribbonN(p, (nx, ny); mono = false)
     return h
 end
 
-function nanoribbonS(p, (nx, ny); mono = false, dxS = 1.)
+function nanoribbonS(p, (nx, ny); mono = false, dxS = 100.)
     (; Ln, Ls, Δ, a0, τ, d) = p
     (; model0, field!) = modelS(p)
     lat = mono ? latSLG(p) : latBLG(p)
     perpaxis = Quantica.normalize(bravais(lat) * SA[1 1; -1 1] * SA[-ny, nx])
 
-    regionS(r) = abs(dot(perpaxis, r)) > ifelse(iszero(Ls), (round(0.5*Ln/a0)-0.9)*a0, Ln/2)
+    regionS(r) = abs(dot(perpaxis, r)) > ifelse(iszero(Ls), (round(0.5*Ln/a0)-dxS)*a0, Ln/2) #0.9
     regionS(r, dr) = regionS(r)
 
     smooth(r) = iszero(d) ? ifelse(abs(dot(perpaxis, r)) < Ln/2 - dxS * a0, 0.0, 1.0) :

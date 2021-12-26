@@ -37,7 +37,7 @@ function rectangle_randombounds_sc(p, θ = 0, η = 0.; sidecontacts = false,
     smooth_method(r) = ifelse(sidecontacts == true , smooth_sides(r), smooth(r))
     
     #random model (we are randomly replacing sites by vacancies) within rand_region
-    rand_region(r) = Ln/2 - 2a0 <= abs(r[1]) <= Ln/2 #&& Ln/2 - 2a0 <= abs(r[2]) <= Ln/2
+    rand_region(r) = Ln/2 - 0.7a0 <= abs(r[1]) <= Ln/2 #&& Ln/2 - 2a0 <= abs(r[2]) <= Ln/2
     random_mat() = 
         sample([0, 1], StatsBase.Weights([1-η, η])) * σ0τz
     so_rand! = @onsite!((o, r) -> o + rand_region(r) * ifelse(η != 0, 1e3, 0) *
@@ -45,7 +45,7 @@ function rectangle_randombounds_sc(p, θ = 0, η = 0.; sidecontacts = false,
     # local self energy model
     self_region(r) = ifelse(selfy == false, abs(r[1]) ≥ (round(0.5*Ln/a0)-0.9)*a0,  
         # r[1]> -Ln/2 && r[1]< Ln/2 && r[2] < W/2 && r[2]> -W/2)
-        abs(r[1]) ≥ (round(0.5*Ln/a0)-5)*a0 || abs(r[2]) ≥ (round(0.5*W/a0)-5)*a0)
+        abs(r[1]) ≥ (round(0.5*Ln/a0)-0.7)*a0 || abs(r[2]) ≥ (round(0.5*W/a0)-0.7)*a0)
 
     # self_region(r) = ifelse(selfy == false, abs(r[1]) ≥ (round(0.5*Ln/a0)-0.9)*a0,  
     # r[1] ≤ -tan(θ)*r[2]-(round(0.5*Ln/a0)-2)*a0 ||  
