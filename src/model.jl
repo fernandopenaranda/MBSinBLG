@@ -24,6 +24,7 @@ const σz = SA[1 0; 0 -1]
     dintra = a0/sqrt(3)
     dinter_warp = sqrt(dintra^2 + dinter^2)
     Ls = 0                      #units of a0
+    Ws = 0
     Ln = 30                     #units of a0
     W = 30                      #units of a0
     d = 0                       # transition length of NS contact
@@ -48,21 +49,39 @@ const σz = SA[1 0; 0 -1]
     g = 2
 end
 
-function latBLG(p = Params())
-    @unpack a0, dinter = p
-    sAbot = sublat((0.0,-1.0a0/sqrt(3.0), - dinter/2); name = :Ab)
-    sBbot = sublat((0.0, 0.0a0/sqrt(3.0), - dinter/2); name = :Bb)
-    sAtop = sublat((0.0, 0.0a0/sqrt(3.0), + dinter/2); name = :At)
-    sBtop = sublat((0.0, 1.0a0/sqrt(3.0), + dinter/2); name = :Bt)
-    br = a0 * SA[cos(pi/3) sin(pi/3) 0; -cos(pi/3) sin(pi/3) 0]'
-    lat = lattice(sAtop, sBtop, sAbot, sBbot; bravais = br)
-    return lat
+# function latBLG(p = Params())
+#     @unpack a0, dinter = p
+#     sAbot = sublat((0.0,-1.0a0/sqrt(3.0), - dinter/2); name = :Ab)
+#     sBbot = sublat((0.0, 0.0a0/sqrt(3.0), - dinter/2); name = :Bb)
+#     sAtop = sublat((0.0, 0.0a0/sqrt(3.0), + dinter/2); name = :At)
+#     sBtop = sublat((0.0, 1.0a0/sqrt(3.0), + dinter/2); name = :Bt)
+#     br = a0 * SA[cos(pi/3) sin(pi/3) 0; -cos(pi/3) sin(pi/3) 0]'
+#     lat = lattice(sAtop, sBtop, sAbot, sBbot; bravais = br)
+#     return lat
+# end
+
+
+function latBLG(p, θ)
+    (; a0, dinter, Ln, W) = p
+    lat0_slg = LP.honeycomb(; a0, dim = 3)
+    function rotated_region(r)
+        r´ = SA[r[1], floor(abs(r[2])/(0.5*√3 * a0)) * sign(r[2])*(0.5*√3 * a0), r[3]]
+        r´ = SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * r´
+        return abs(r´[1]) <= Ln/2 && abs(r´[2]) <= W/2
+    end
+    lat_slg = unitcell(lat0_slg, region = rotated_region)
+    Quantica.transform!(r -> SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * r, lat_slg)
+    lat_bot = lattice(Quantica.transform!(r -> r + SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] *
+         SA[0, -0.5*a0/sqrt(3.0), -dinter/2], copy(lat_slg)); names = (:Ab, :Bb))
+    lat_top = lattice(Quantica.transform!(r -> r + SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * 
+        SA[0, 0.5*a0/sqrt(3.0), dinter/2], copy(lat_slg)); names = (:At, :Bt))
+    return lat_top, lat_bot
 end
 
 latSLG(p = Params()) = LP.honeycomb(; a0 = p.a0, dim = Val(3))
 
 function modelN(p = Params())
-    @unpack a0, dinter, dintra, dinter_warp, Ls, Ln, W, μN,μS , t0, t1,
+    @unpack a0, dinter, dintra, dinter_warp, Ls, Ln, W, μN, μS, t0, t1,
             t3, Δ, λ, g, U, U_dimer, α, scale, EZ, E = p
 
     modelintra = hopping(-t0 * σ0, range = dintra,
@@ -104,7 +123,7 @@ function modelS(p = Params())
     modelintra = hopping(-t0 * σ0τz, range = dintra,
             sublats = (:At=>:Bt,:Ab=>:Bb,:Bb=>:Ab,:Bt=>:At, :A=>:B, :B=>:A))
 
-    modelinter = hopping(t1 * σ0τz, range = dinter, sublats = (:At=>:Bb,:Bb=>:At)) +
+    modelinter = hopping(t1 * σ0τz, range = dinter, sublats = (:At=>:Bb, :Bb=>:At)) +
                  hopping(t3 * σ0τz, range = dinter_warp, sublats = (:Bt=>:Ab, :Ab=>:Bt))
 
     hopI(λ, dr) = λ/(2*3*sqrt(3)) * im * cos(3*atan(dr[2],dr[1])) * σzτ0
@@ -113,8 +132,8 @@ function modelS(p = Params())
         sublats = (:At, :Bt ,:Ab, :Bb) .=> (:At, :Bt ,:Ab, :Bb), range = a0)
 
     modelKaneMele =
-        hopping((r, dr) -> hopI(λ, dr), sublats = :A=>:A, range = a0) -
-        hopping((r, dr) -> hopI(λ, dr), sublats = :B=>:B, range = a0)
+        hopping((r, dr) -> hopI(λ, dr), sublats = :A=> :A, range = a0) -
+        hopping((r, dr) -> hopI(λ, dr), sublats = :B=> :B, range = a0)
 
     hopR(α, dr) = 2α/3 * im * (dr[2]/dintra * σxτ0 - dr[1]/dintra * σyτz)
 
@@ -123,12 +142,12 @@ function modelS(p = Params())
             sublats = (:At=>:Bt, :Bt=>:At, :A=>:B, :B=>:A)) -
         hopping((r,dr) -> hopR(α, dr), range = a0/√3, sublats = (:Ab=>:Bb, :Bb=>:Ab))
 
-    modelonsiteN = onsite(-μN * σ0τz + EZ'*SA[σxτz, σyτ0, σzτz])
+    modelonsiteN = onsite(-μN * σ0τz + EZ' * SA[σxτz, σyτ0, σzτz])
 
     model0 = modelonsiteN + modelintra + modelinter + modelIsing + 
         modelKaneMele + modelRashba
 
     field! = @onsite!((o, r) -> o + E'r * σ0τz)
 
-    return (; model0, field!)
+    return (; model0, field!, modelinter)
 end
