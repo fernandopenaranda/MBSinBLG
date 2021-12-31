@@ -49,16 +49,16 @@ const σz = SA[1 0; 0 -1]
     g = 2
 end
 
-# function latBLG(p = Params())
-#     @unpack a0, dinter = p
-#     sAbot = sublat((0.0,-1.0a0/sqrt(3.0), - dinter/2); name = :Ab)
-#     sBbot = sublat((0.0, 0.0a0/sqrt(3.0), - dinter/2); name = :Bb)
-#     sAtop = sublat((0.0, 0.0a0/sqrt(3.0), + dinter/2); name = :At)
-#     sBtop = sublat((0.0, 1.0a0/sqrt(3.0), + dinter/2); name = :Bt)
-#     br = a0 * SA[cos(pi/3) sin(pi/3) 0; -cos(pi/3) sin(pi/3) 0]'
-#     lat = lattice(sAtop, sBtop, sAbot, sBbot; bravais = br)
-#     return lat
-# end
+function latBLG_unbounded(p = Params())
+    @unpack a0, dinter = p
+    sAbot = sublat((0.0,-1.0a0/sqrt(3.0), - dinter/2); name = :Ab)
+    sBbot = sublat((0.0, 0.0a0/sqrt(3.0), - dinter/2); name = :Bb)
+    sAtop = sublat((0.0, 0.0a0/sqrt(3.0), + dinter/2); name = :At)
+    sBtop = sublat((0.0, 1.0a0/sqrt(3.0), + dinter/2); name = :Bt)
+    br = a0 * SA[cos(pi/3) sin(pi/3) 0; -cos(pi/3) sin(pi/3) 0]'
+    lat = lattice(sAtop, sBtop, sAbot, sBbot; bravais = br)
+    return lat
+end
 
 
 function latBLG(p, θ)
@@ -132,8 +132,8 @@ function modelS(p = Params())
         sublats = (:At, :Bt ,:Ab, :Bb) .=> (:At, :Bt ,:Ab, :Bb), range = a0)
 
     modelKaneMele =
-        hopping((r, dr) -> hopI(λ, dr), sublats = :A=> :A, range = a0) -
-        hopping((r, dr) -> hopI(λ, dr), sublats = :B=> :B, range = a0)
+        hopping((r, dr) -> 0*hopI(λ, dr), sublats = :A=> :A, range = a0) -
+        hopping((r, dr) -> 0*hopI(λ, dr), sublats = :B=> :B, range = a0)
 
     hopR(α, dr) = 2α/3 * im * (dr[2]/dintra * σxτ0 - dr[1]/dintra * σyτz)
 

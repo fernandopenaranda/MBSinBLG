@@ -12,23 +12,13 @@ function rectangle_randombounds_sc(p, θ = 0, η = 0.; sidecontacts = false,
         selfy = false, ϕ0 = 0)
     (; Ln, Ls, Δ, a0, τ, d, W, Ws) = p
     (; model0, field!, modelinter) = modelS(p)
-    
-    ## lat0 = latBLG(p)
     lat_top, lat_bot = latBLG(p, θ)
-    
-    # rot(r) = SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * r
-    # Quantica.transform!(r -> rot(r), lat0)
-    
+       
     # contact model (Josephson vs rectangular mask architectures)
-    # lat = unitcell(lat0, 
-    #     region = (r) -> r[1]> -Ln/2 && r[1]< Ln/2 && r[2] < W/2 && r[2]> -W/2)   
-
     smooth_sides(r) = iszero(d) ? ifelse(abs(r[1])<Ln/2 && abs(r[2])<W/2, 0.0, 1.0) :
             1 - (1 + tanh((Ln/2-abs(r[1]))/d))/2
-
     smooth_rectangle(r) = iszero(d) ? ifelse(abs(r[1])<Ln/2 && abs(r[2])<W/2, 0.0, 1.0) :
                 1 - (1 + tanh((Ln/2-abs(r[1]))/d))*(1 + tanh((W/2-abs(r[2]))/d))/4
-
     smooth_method(r) = ifelse(sidecontacts == true , smooth_sides(r), smooth_rectangle(r))
     
     # RANDOM MODEL (we randomly replace sites within rand_region by vacancies) 
@@ -49,19 +39,15 @@ function rectangle_randombounds_sc(p, θ = 0, η = 0.; sidecontacts = false,
     
     # ONSITE SC MODEL (enabled with d ≂̸ 0, disabled by default)
     SCo! = @onsite!((o, r) -> o + smooth_method(r) * Δ * σyτy)
-    SCh! = @hopping!((t, r, dr) -> t * (1-smooth_method(r));
-        sublats = (:At, :Bt ,:Ab, :Bb, :A, :B) .=> (:At, :Bt ,:Ab, :Bb, :A, :B))
-    sCself! = @onsite!((o, r) -> o + self_region(r) * Δ * σyτy)
+    # SCh! = @hopping!((t, r, dr) -> t * (1-smooth_method(r));
+    #     sublats = (:At, :Bt ,:Ab, :Bb, :A, :B) .=> (:At, :Bt ,:Ab, :Bb, :A, :B))
     # SCτ! = @hopping!((t, r, dr) -> t * τ; region = (r, dr) -> xor(regionS(r - dr/2),
     #     regionS(r + dr/2)))
     
     # HAMILTONIAN BUILD
     h_top = lat_top |> hamiltonian(model0; orbitals = Val(4)) |> unitcell(mincoordination = 5)    
     h_bot = lat_bot |> hamiltonian(model0; orbitals = Val(4)) |> unitcell(mincoordination = 5)
-    ph = Quantica.combine(h_top, h_bot; coupling = modelinter) |> 
-        parametric(field!, so_rand!, SCo!, sCself!, SCh!)#, SCτ!)
-
-    # ph = lat |> hamiltonian(model0; orbitals = Val(4)) |> 
-    #     parametric(field!, so_rand!, SCo!, sCself!, SCh!, SCτ!)
-    return ph(ϕ = ϕ0) # ph()
+     ph = Quantica.combine(h_top, h_bot; coupling = modelinter) |> 
+        parametric(field!, so_rand!, SCo!, sCself!) #, SCh!, SCτ!)
+    return ph(ϕ = ϕ0)
 end
