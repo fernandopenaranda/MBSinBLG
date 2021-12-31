@@ -21,8 +21,9 @@ end
 
 
 function runfig5new()
-    p = Params(Ln = 1440, W = 1440, Ls = 0, scale = 80, 
-        λ = 5, α = 0, EZ = SA[0, 0, 0],Δ = 1, d = 0, τ = 1);
+
+    p = Params(Ln = 1500, W = 1500, Ls = 40, Ws = 40, scale = 40, λ = 5, α = 0,   
+      Δ = 1, d = 0, τ = 1)
 
     p = reconstruct(p, μN = 0.000001)
     @time sp = spectrumsweepb(p, 0:.25:5, true)
