@@ -61,6 +61,23 @@ function latBLG_unbounded(p = Params())
 end
 
 
+# function latBLG_unbounded(p, θ)
+#     (; a0, dinter, Ln, W) = p
+#     lat0_slg = LP.honeycomb(; a0, dim = 3)
+#     function rotated_region(r)
+#         r´ = SA[r[1], floor(abs(r[2])/(0.5*√3 * a0)) * sign(r[2])*(0.5*√3 * a0), r[3]]
+#         r´ = SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * r´
+#         return abs(r´[1]) <= Ln/2 && abs(r´[2]) <= W/2
+#     end
+#     lat_slg = unitcell(lat0_slg, region = rotated_region)
+#     Quantica.transform!(r -> SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * r, lat_slg)
+#     lat_bot = lattice(Quantica.transform!(r -> r + SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] *
+#          SA[0, -0.5*a0/sqrt(3.0), -dinter/2], copy(lat_slg)); names = (:Ab, :Bb), bravais = br)
+#     lat_top = lattice(Quantica.transform!(r -> r + SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * 
+#         SA[0, 0.5*a0/sqrt(3.0), dinter/2], copy(lat_slg)); names = (:At, :Bt), bravais = br)
+#     return lat_top, lat_bot
+# end
+
 function latBLG(p, θ)
     (; a0, dinter, Ln, W) = p
     lat0_slg = LP.honeycomb(; a0, dim = 3)

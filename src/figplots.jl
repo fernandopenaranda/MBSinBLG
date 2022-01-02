@@ -442,7 +442,7 @@ function scbands(p, which = "armchair")
     if which == "armchair"
         axis = (0,1)
         h = nanoribbonS(p, axis);
-        b = bandstructure(h, cuboid((0,2), subticks = 101),
+        b = bandstructure(h, cuboid((0,1.5), subticks = 51),
             method = ArpackPackage(sigma = -0.00001, nev = 16));
         a = vlplot(b, ylims = (-2, 2), size = (300))
     else
@@ -459,7 +459,7 @@ end
 
 function scbands(p, (nx, ny))
     kpoints = 51
-    numbands = 16
+    numbands = 8
     axis = (ny, nx)
     h = nanoribbonS(p, axis);
 #    return vlplot(h, maxdiameter = 4, plotlinks = false)
