@@ -235,7 +235,7 @@ function fig5plot(Ez, α, ea, eb, ec, ed, ee,  ylims = (-.4,.4))
     g = fig[1:2, 1:11] = GridLayout()
     axa = Axis(fig[1:2, 1:3],  xlabel = L"$E_Z$ [meV]")
     axb = Axis(fig[1:2, 4:6],  xlabel = L"$E_Z$ [meV]")
-    axc = Axis(fig[1:2, 7:10],  xlabel = L"$E_Z$ [meV]")
+    axc = Axis(fig[1:2, 7:9],  xlabel = L"$E_Z$ [meV]")
     axd = Axis(fig[1, 10:11],  xlabel = L"$\alpha$ [meV]", yaxisposition = :right)
     axe = Axis(fig[2, 10:11],  xlabel = L"$\alpha$ [meV]", yaxisposition = :right)
     lines!(axa, Ez, ea[1,:])
@@ -247,7 +247,7 @@ function fig5plot(Ez, α, ea, eb, ec, ed, ee,  ylims = (-.4,.4))
             ifelse(in(i,mean-1:mean+2),  (:red, 1), (:blue, 0.6)), :gray), opacity = .5)
         lines!(axb, Ez, eb[i,:], color = ifelse(in(i, mean-3:mean+4), 
             ifelse(in(i,mean-1:mean+2),  (:red, 1), (:blue, 0.6)), :gray), opacity = .5)
-        lines!(axb, Ez, eb[i,:], color = ifelse(in(i, mean-3:mean+4), 
+        lines!(axc, Ez, ec[i,:], color = ifelse(in(i, mean-3:mean+4), 
             ifelse(in(i,mean-1:mean+2),  (:red, 1), (:blue, 0.6)), :gray), opacity = .5)
     end
     vlines!(axb, 2, color = :black, linewidth = .9, linestyle = :dash)
@@ -257,10 +257,10 @@ function fig5plot(Ez, α, ea, eb, ec, ed, ee,  ylims = (-.4,.4))
     lines!(axe, α, ee[1,:])
     mean = size(ed, 1) ÷ 2
     for i in 2:size(ed, 1)
-        lines!(axc, α, ed[i,:], color = ifelse(in(i, mean-3:mean+4), 
-            ifelse(in(i,[mean-1,mean+2]),  (:dodgerblue3, 1), (:firebrick3, 0.5)), :gray))
-        lines!(axd, α, ee[i,:], color = ifelse(in(i, mean-3:mean+4), 
-            ifelse(in(i,[mean-1,mean+2]),  (:dodgerblue3, 1), (:firebrick3, 0.5)), :gray))
+        lines!(axd, α, ed[i,:], color = ifelse(in(i, mean-3:mean+4), 
+            ifelse(in(i,mean-1:mean+2),  (:red, 1), (:blue, 0.6)), :gray), opacity = .5)
+        lines!(axe, α, ee[i,:], color = ifelse(in(i, mean-3:mean+4), 
+            ifelse(in(i,mean-1:mean+2),  (:red, 1), (:blue, 0.6)), :gray), opacity = .5)
     end
     
     axa.ylabel = "E [meV]"
