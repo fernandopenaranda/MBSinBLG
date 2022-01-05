@@ -11,4 +11,6 @@ function runfig7()
     println("4")
     ϕs, esd = cpr(ϕlist, reconstruct(p, EZ = SA[0, 4, 0], μN = 1.192, α = 1), nev = 16)
     savecprs("fig7", p, ϕs, esa, esb, esc, esd)    
+
+    
 end

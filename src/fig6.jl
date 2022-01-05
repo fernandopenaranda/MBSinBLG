@@ -26,6 +26,52 @@ function runfig6()
     data = ldosonlattice_averaged_sc(p, presets_fig)
     savepsi("fig6psi", p, data[1])
 
+#############
+    p = reconstruct(p, EZ = SA[0, 2, 0], μN = 0.6)
+    presets_fig = Fig4_presets(0.01, 2π/180, 0, 8, true)
+    data = ldosonlattice_averaged_sc(p, presets_fig)
+    savepsi("fig6psi", p, data[1])
+    savepsi("fig6psi", p, data[2])
+
+    p = reconstruct(p, EZ = SA[0, 4, 0], μN = 1.192)
+    presets_fig = Fig4_presets(0.01, 2π/180, 0, 4, true)
+    data = ldosonlattice_averaged_sc(p, presets_fig)
+    savepsi("fig6psi", p, data[1])
+
+    p = reconstruct(p, EZ = SA[0, 2, 0], μN = 0.6)
+    presets_fig = Fig4_presets(0.03, 2π/180, 0, 8, true)
+    data = ldosonlattice_averaged_sc(p, presets_fig)
+    savepsi("fig6psi", p, data[1])
+    savepsi("fig6psi", p, data[2])
+
+    p = reconstruct(p, EZ = SA[0, 4, 0], μN = 1.192)
+    presets_fig = Fig4_presets(0.03, 2π/180, 0, 4, true)
+    data = ldosonlattice_averaged_sc(p, presets_fig)
+    savepsi("fig6psi", p, data[1])
+
+    p = reconstruct(p, EZ = SA[0, 2, 0], μN = 0.6)
+    presets_fig = Fig4_presets(0.05, 2π/180, 0, 8, true)
+    data = ldosonlattice_averaged_sc(p, presets_fig)
+    savepsi("fig6psi", p, data[1])
+    savepsi("fig6psi", p, data[2])
+
+    p = reconstruct(p, EZ = SA[0, 4, 0], μN = 1.192)
+    presets_fig = Fig4_presets(0.05, 2π/180, 0, 4, true)
+    data = ldosonlattice_averaged_sc(p, presets_fig)
+    savepsi("fig6psi", p, data[1])
+
+    p = reconstruct(p, EZ = SA[0, 2, 0], μN = 0.6)
+    presets_fig = Fig4_presets(0.1, 2π/180, 0, 8, true)
+    data = ldosonlattice_averaged_sc(p, presets_fig)
+    savepsi("fig6psi", p, data[1])
+    savepsi("fig6psi", p, data[2])
+
+    p = reconstruct(p, EZ = SA[0, 4, 0], μN = 1.192)
+    presets_fig = Fig4_presets(0.1, 2π/180, 0, 4, true)
+    data = ldosonlattice_averaged_sc(p, presets_fig)
+    savepsi("fig6psi", p, data[1])
+
+
     # PANELS e-f
     sp = splittingvsrotation(reconstruct(p, Ln = 400, EZ = SA[0, 2, 0], μN = 0.6), 0:.25:10, true, ϕ0 = pi)
     savespectrum("fig6", p, sp[1], sp[2])
