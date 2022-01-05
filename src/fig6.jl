@@ -2,6 +2,8 @@ function runfig6()
     p = Params(Ln = 2000, W = 2000, Ls = 20, Ws = 20, scale = 40, λ = 5, α = 0,   
     Δ = 1, d = 0, τ = 1)
 
+    p = Params(Ln = 200, W = 200, Ls = 20, Ws = 20, scale = 40, λ = 5, α = 0,   
+    Δ = 1, d = 0, τ = 1)
     # PANELS a-b
     p = reconstruct(p, EZ = SA[0, 2, 0], μN = 0.6)
     presets_fig = Fig4_presets(0.000, 0π/180, 0, 8, true)

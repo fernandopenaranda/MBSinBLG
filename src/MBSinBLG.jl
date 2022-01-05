@@ -11,7 +11,7 @@ module MBSinBLG
 
     export nanoribbonS, nanoribbonSA, nanoribbonSZ, Params, rectangle_squid, 
         rectangle_randombounds_sc, splittingvsrotation, savespectrum, modelS,
-        cpr, savepsi, ldosonlattice_averaged_sc, savecprs
+        cpr, savepsi, ldosonlattice_averaged_sc, savecprs, Fig4_presets
 
     export fig2run, fig3run, fig4run, fig5run, fig6run, fig7run, ldosonlattice
     export fig2plot, fig3plot, fig4plot, fig5plot, fig6plot, fig7plot
