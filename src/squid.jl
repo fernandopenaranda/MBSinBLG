@@ -2,21 +2,27 @@
 SQUID geometry. Self energy on the zigzag edge with a phase difference (-ϕ/2 for x<0 ϕ/2 for x>0)
 Neither smoothness nor leads are implemented. Also disorder and rotation are not considered.
 """
-function rectangle_squid(p; W = 2000)
-    (; Ln, Ls, Δ, a0, τ, d) = p
-    (; model0, field!) = modelS(p)
-    lat0 = latBLG(p)
-    lat = unitcell(lat0, 
-        region = (r) -> r[1]> -Ln/2 && r[1]< Ln/2-0*1/2*a0 && r[2] < W/2 && r[2]> -W/2)
-    # SC
-    self_region(r) =  
-        abs(r[1]) ≥ (round(0.5*Ln/a0)-0.9)*a0|| abs(r[2]) ≥ (round(0.5*W/a0)-0.9)*a0
-
+function rectangle_squids(p)
+    (; Ls, Δ, Ws) = p
+    (; model0, field!, modelinter) = modelS(p)
+    lat_top, lat_bot = latBLG(p, 0) #0 angle rotation
+    
+    # LOCAL SELF-ENERGY MODEL
+    xmin, xmax = extrema(r->r[1], sitepositions(Quantica.combine(lat_top, lat_bot)))
+    ymin, ymax = extrema(r->r[2], sitepositions(Quantica.combine(lat_top, lat_bot)))
+    self_region(r) = !(xmin+Ls <= r[1] <= xmax - Ls) || !(ymin+Ws <= r[2] <= ymax - Ws)
     diagphi(ϕ) = Diagonal(SA[cis(ϕ), cis(ϕ), cis(-ϕ), cis(-ϕ)])
     sCself! = @onsite!((o, r; ϕ) -> o + 
-        self_region(r) * Δ * diagphi(sign(r[1])* ϕ/4) * σyτy * diagphi(sign(r[1])*ϕ/4)')     
-    #return the parametric hamiltonian in ϕ
-    return lat |> hamiltonian(model0; orbitals = Val(4))|> parametric(sCself!)
+        self_region(r) * Δ * diagphi(sign(r[1])* ϕ/4) * σyτy * diagphi(sign(r[1])*ϕ/4)') 
+                                                              
+    # HAMILTONIAN BUILD
+    h_top = lat_top |> hamiltonian(model0; orbitals = Val(4)) |> 
+        unitcell(mincoordination = 5, region = !isvacancy)    
+    h_bot = lat_bot |> hamiltonian(model0; orbitals = Val(4)) |>
+        unitcell(mincoordination = 5, region = !isvacancy)
+    ph = Quantica.combine(h_top, h_bot; coupling = modelinter) |> 
+        parametric(sCself!) 
+            return ph
 end
 
 """

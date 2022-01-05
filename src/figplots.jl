@@ -220,65 +220,69 @@ latticeplot(psi, h0) = vlplot(h0, psi,
 # Figure 5
 ############################################################################################
 
-function fig5plot(patha, pathb, pathc, pathd)
+function fig5plot(patha, pathb, pathc, pathd, pathe)
     Ez, ea = readspectrum(patha)
     _, eb = readspectrum(pathb)
-    α, ec = readspectrum(pathc)
-    _, ed = readspectrum(pathd)
-    return fig5plot(Ez.EZ, α.EZ, Matrix(ea), Matrix(eb), Matrix(ec),  Matrix(ed))
+    _, ec = readspectrum(pathc)
+    α, ed = readspectrum(pathd)
+    _, ee = readspectrum(pathe)
+    return fig5plot(Ez.EZ, α.EZ, Matrix(ea), Matrix(eb), Matrix(ec),  Matrix(ed), Matrix(ee))
 end
 
 
-function fig5plot(Ez, α, ea, eb, ec, ed,  ylims = (-.4,.4))
+function fig5plot(Ez, α, ea, eb, ec, ed, ee,  ylims = (-.4,.4))
     fig = Figure(resolution = (500, 300), font = "Times New Roman") 
-    # gb = fig[1:2, 2] = GridLayout
-    g = fig[1:2, 1:3] = GridLayout()
-    # axa = Axis(fig[1, 1])
-    # axb = Axis(fig[2, 2])
-    # axc = Axis(fig[1, 3],  xlabel = L"$\alpha$", yaxisposition = :right)
-    # axd = Axis(fig[2, 3],  xlabel = L"$\alpha$", yaxisposition = :right)
-    axa = Axis(fig[1:2, 1],  xlabel = L"$E_Z$ [meV]")
-    axb = Axis(fig[1:2, 2],  xlabel = L"$E_Z$ [meV]")
-    axc = Axis(fig[1, 3],  xlabel = L"$\alpha$ [meV]", yaxisposition = :right)
-    axd = Axis(fig[2, 3],  xlabel = L"$\alpha$ [meV]", yaxisposition = :right)
+    g = fig[1:2, 1:11] = GridLayout()
+    axa = Axis(fig[1:2, 1:3],  xlabel = L"$E_Z$ [meV]")
+    axb = Axis(fig[1:2, 4:6],  xlabel = L"$E_Z$ [meV]")
+    axc = Axis(fig[1:2, 7:10],  xlabel = L"$E_Z$ [meV]")
+    axd = Axis(fig[1, 10:11],  xlabel = L"$\alpha$ [meV]", yaxisposition = :right)
+    axe = Axis(fig[2, 10:11],  xlabel = L"$\alpha$ [meV]", yaxisposition = :right)
     lines!(axa, Ez, ea[1,:])
     lines!(axb, Ez, eb[1,:])
+    lines!(axc, Ez, ec[1,:])
     mean = size(ea, 1) ÷ 2
     for i in 2:size(ea, 1)
         lines!(axa, Ez, ea[i,:], color = ifelse(in(i, mean-3:mean+4), 
-            ifelse(in(i,[mean-1,mean+2]),  (:dodgerblue3, 1), (:firebrick3, 0.5)), :gray), opacity = .5)
+            ifelse(in(i,mean-1:mean+2),  (:red, 1), (:blue, 0.6)), :gray), opacity = .5)
         lines!(axb, Ez, eb[i,:], color = ifelse(in(i, mean-3:mean+4), 
-            ifelse(in(i,[mean-1,mean+2]),  (:dodgerblue3, 1), (:firebrick3, 0.5)), :gray), opacity = .5)
+            ifelse(in(i,mean-1:mean+2),  (:red, 1), (:blue, 0.6)), :gray), opacity = .5)
+        lines!(axb, Ez, eb[i,:], color = ifelse(in(i, mean-3:mean+4), 
+            ifelse(in(i,mean-1:mean+2),  (:red, 1), (:blue, 0.6)), :gray), opacity = .5)
     end
-    vlines!(axb, [2, 4], color = :black, linewidth = .9, linestyle = :dash)
+    vlines!(axb, 2, color = :black, linewidth = .9, linestyle = :dash)
+    vlines!(axc, 4, color = :black, linewidth = .9, linestyle = :dash)
 
-    lines!(axc, α, ec[1,:])
     lines!(axd, α, ed[1,:])
-    mean = size(ec, 1) ÷ 2
-    for i in 2:size(ec, 1)
-        lines!(axc, α, ec[i,:], color = ifelse(in(i, mean-3:mean+4), 
+    lines!(axe, α, ee[1,:])
+    mean = size(ed, 1) ÷ 2
+    for i in 2:size(ed, 1)
+        lines!(axc, α, ed[i,:], color = ifelse(in(i, mean-3:mean+4), 
             ifelse(in(i,[mean-1,mean+2]),  (:dodgerblue3, 1), (:firebrick3, 0.5)), :gray))
-        lines!(axd, α, ed[i,:], color = ifelse(in(i, mean-3:mean+4), 
+        lines!(axd, α, ee[i,:], color = ifelse(in(i, mean-3:mean+4), 
             ifelse(in(i,[mean-1,mean+2]),  (:dodgerblue3, 1), (:firebrick3, 0.5)), :gray))
     end
     
     axa.ylabel = "E [meV]"
     axb.ylabel = " "
-    axc.ylabel = "E [meV]"
+    axc.ylabel = ""
     axd.ylabel = "E [meV]"
-    ylims!(axa, (-0.5,0.5))
-    ylims!(axb,  (-0.5,0.5))
-    ylims!(axc, ylims)
-    ylims!(axd, (-0.15, 0.15))
-    xlims!(axa, low = 0)
-    xlims!(axb, low = 0)
-    xlims!(axc, (0, 4))
-    xlims!(axd, low = 0)
+    axe.ylabel = "E [meV]"
+    ylims!(axa, (-0.4,0.4))
+    ylims!(axb,  (-0.4,0.4))
+    ylims!(axc,  (-0.4,0.4))
+    ylims!(axd, (-0.3, 0.3))
+    ylims!(axe, (-0.3, 0.3))
+    xlims!(axa, (0, 5))
+    xlims!(axb, (0, 5))
+    xlims!(axc, (0, 5))
     xlims!(axd, (0, 4))
-    colgap!(g, 20)
+    xlims!(axe, (0, 4))
+    colgap!(g, 10)
     rowgap!(g, 10)
-    hidexdecorations!(axc, grid = false)
+    hidexdecorations!(axd, grid = false)
     hideydecorations!(axb, grid = false)
+    hideydecorations!(axc, grid = false)
     # Label(g[1, 1, TopLeft()], "a", textsize = 16, font = "Times New Roman", 
     #     padding = (0, 5, 5, 0), halign = :right)
     # Label(g[1, 2, TopRight()], "b", textsize = 16, font = "Times New Roman", 
@@ -300,12 +304,12 @@ function fig6plot(patha, pathb)
 end
 
 function fig6plot(Ez, ea, eb,  ylims = (-0.2, 0.2))
-    fig = Figure(resolution = (250, 500), font = "Times New Roman") 
-    axa = Axis(fig[1, 1], yaxisposition = :right)
-    axb = Axis(fig[2, 1], yaxisposition = :right)
+    fig = Figure(resolution = (500, 250), font = "Times New Roman") 
+    axa = Axis(fig[1, 1] )
+    axb = Axis(fig[1, 2])
     mean = size(ea, 1) ÷ 2
-    lines!(axa, 180/π .* Ez, ea[1,:], color = :gray, yaxisposition = :right)
-    lines!(axb, 180/π .* Ez, eb[1,:], color = :gray, yaxisposition = :right)
+    lines!(axa, 180/π .* Ez, ea[1,:], color = :gray)
+    lines!(axb, 180/π .* Ez, eb[1,:], color = :gray)
     for i in 2:size(ea, 1)
         lines!(axa, 180/π .*Ez, ea[i,:], color = ifelse(in(i, mean-3:mean+4), 
             ifelse(in(i,mean-1:mean+2),  (:red, 1), (:blue, 0.6)), :gray), opacity = .5, 
@@ -316,14 +320,38 @@ function fig6plot(Ez, ea, eb,  ylims = (-0.2, 0.2))
     axa.xlabel = " θ  [°]"
     axb.xlabel = " θ  [°]"
     axa.ylabel = "E [meV]"
-    axb.ylabel = "E [meV]"
+    axb.ylabel = ""
     # xlims!(axa, (0, 5))
     # xlims!(axb, (0, 5))
-    hidexdecorations!(axa, grid = false)
-    ylims!(axa, ylims)
-    ylims!(axb, ylims)#(-0.05,0.05))
+    hideydecorations!(axb, grid = false)
     fig
 end
+
+# function fig6plot(Ez, ea, eb,  ylims = (-0.2, 0.2))
+#     fig = Figure(resolution = (250, 500), font = "Times New Roman") 
+#     axa = Axis(fig[1, 1], yaxisposition = :right)
+#     axb = Axis(fig[2, 1], yaxisposition = :right)
+#     mean = size(ea, 1) ÷ 2
+#     lines!(axa, 180/π .* Ez, ea[1,:], color = :gray, yaxisposition = :right)
+#     lines!(axb, 180/π .* Ez, eb[1,:], color = :gray, yaxisposition = :right)
+#     for i in 2:size(ea, 1)
+#         lines!(axa, 180/π .*Ez, ea[i,:], color = ifelse(in(i, mean-3:mean+4), 
+#             ifelse(in(i,mean-1:mean+2),  (:red, 1), (:blue, 0.6)), :gray), opacity = .5, 
+#             yaxisposition = :right)
+#         lines!(axb, 180/π .*Ez, eb[i,:], color = ifelse(in(i, mean-1:mean+2), 
+#             :red, :gray), opacity = .5, yaxisposition = :right)
+#     end
+#     axa.xlabel = " θ  [°]"
+#     axb.xlabel = " θ  [°]"
+#     axa.ylabel = "E [meV]"
+#     axb.ylabel = "E [meV]"
+#     # xlims!(axa, (0, 5))
+#     # xlims!(axb, (0, 5))
+#     hidexdecorations!(axa, grid = false)
+#     ylims!(axa, ylims)
+#     ylims!(axb, ylims)#(-0.05,0.05))
+#     fig
+# end
 
 ############################################################################################
 # Figure 7
