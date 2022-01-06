@@ -31,14 +31,14 @@ function rectangle_randombounds_sc(p, θ = 0, η = 0.; sidecontacts = false,
     h_bot = lat_bot |> hamiltonian(model0; orbitals = Val(4)) |> unitcell(mincoordination = 5, region = !vacancies)
      ph = Quantica.combine(h_top, h_bot; coupling = modelinter) |> 
         parametric(field!, sCself!) 
-    if η !=0
-        sitesinhdis = length(collect(siteindices(ph(ϕ=0))))
-        println(sitesinhdis)
-        normalsites, allsites = sitesinhord(lat_top, lat_bot, self_region, model0, modelinter)
-        # println(scsites)
-        println("vacancy probability: ", 1-(sitesinhdis-normalsites)/(allsites-normalsites))
-    else nothing 
-    end
+    # if η !=0
+    #     sitesinhdis = length(collect(siteindices(ph(ϕ=0))))
+    #     println(sitesinhdis)
+    #     normalsites, allsites = sitesinhord(lat_top, lat_bot, self_region, model0, modelinter)
+    #     # println(scsites)
+    #     println("vacancy probability: ", 1-(sitesinhdis-normalsites)/(allsites-normalsites))
+    # else nothing 
+    # end
     return ph(ϕ = ϕ0)
 end
 

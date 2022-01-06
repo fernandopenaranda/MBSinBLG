@@ -105,11 +105,11 @@ function readspectrum(datapath::String)
 end
 
 function readcpr(datapath::String)
-    phi = read(join([datapath,"/phi.csv"]), DataFrame)
-    cpra = read(join([datapath,"/cpra.csv"]), DataFrame)
-    cprb = read(join([datapath,"/cprb.csv"]), DataFrame)
-    cprc = read(join([datapath,"/cprc.csv"]), DataFrame)
-    cprd = read(join([datapath,"/cprd.csv"]), DataFrame)
+    phi = CSV.read(join([datapath,"/phi.csv"]), DataFrame)
+    cpra = CSV.read(join([datapath,"/cpra.csv"]), DataFrame)
+    cprb = CSV.read(join([datapath,"/cprb.csv"]), DataFrame)
+    cprc = CSV.read(join([datapath,"/cprc.csv"]), DataFrame)
+    cprd = CSV.read(join([datapath,"/cprd.csv"]), DataFrame)
     return phi, cpra, cprb, cprc, cprd
 end
 
