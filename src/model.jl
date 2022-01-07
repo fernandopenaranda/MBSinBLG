@@ -14,7 +14,7 @@ const σx = SA[0 1; 1 0]
 const σy = SA[0 -im; im 0]
 const σz = SA[1 0; 0 -1]
 
-@with_kw struct Params @deftype Float64
+@with_kw struct Params @deftype Float32
     # Units: nm, meV
     # Params AB bernal bilayer obtained from DFT calculations: 
     # ref -> https://arxiv.org/pdf/1511.06706.pdf (flag <-:dft)
@@ -41,8 +41,8 @@ const σz = SA[1 0; 0 -1]
                                 # https://arxiv.org/pdf/1901.01332.pdf
     U = 0                       #Interlayer bias
     Δ = 1.3                     #That of SC MoRe: ref ->  https://arxiv.org/abs/2006.05522
-    EZ::SVector{3,Float64} = [0,20,0]
-    E::SVector{3,Float64} = [0,0,0]
+    EZ::SVector{3,Float32} = [0,20,0]
+    E::SVector{3,Float32} = [0,0,0]
     λ = 30                      #Between [-2.5,2.5] meV: 
                                 #ref -> https://arxiv.org/abs/1905.08688
     α = 20                      #Rashba coef

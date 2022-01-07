@@ -369,10 +369,12 @@ function fig7plot(ϕs, ea, eb, ec, ed; ylims = (-0.007, 0.007))
     axc = Axis(fig[2,1])
     axd = Axis(fig[2,2])
     mean = size(ea, 1) ÷ 2
-    lines!(axa, ϕs/π, ea[1,:], color = :gray)
-    lines!(axb, ϕs/π, eb[1,:], color = :gray)
-    lines!(axc, ϕs/π, ec[1,:], color = :gray)
-    lines!(axd, ϕs/π, ed[1,:], color = :gray)
+    println(size(eb[1,:]))
+    println(size(ec[1,:]))
+    # lines!(axa, ϕs/π, ea[1,:], color = :gray)
+    # lines!(axb, ϕs/π, eb[1,:], color = :gray)
+    # lines!(axc, ϕs/π, ec[1,:], color = :gray)
+    # lines!(axd, ϕs/π, ed[1,:], color = :gray)
     for i in 2:size(ea, 1)
         lines!(axa, ϕs/π, ea[i,:], color = ifelse(in(i, mean-3:mean+4),
             ifelse(in(i,mean-1:mean+2),  (:red, 1), (:blue, 0.5)), :gray), opacity = .5)
@@ -447,64 +449,64 @@ end
 # Extra
 ########
 
-# Bands
-function normalbands(p, which = "armchair")
-    if which == "armchair"
-        kmin, kmax = (-2., 2.)
-        axis = (0, 1)
-        h = nanoribbonN(p, axis);
-        b = bandstructure(h, cuboid((-2.,2.), subticks = 201),
-            method = ArpackPackage(sigma = -0.00001, nev = 16));
-        # a = vlplot(b, ylims = (-10, 10), size = (300))
-    else
-        kmin, kmax = (0., 2pi)
-        axis = (1, 0)
-        h = nanoribbonN(p, axis);
-        b = bandstructure(h, cuboid((0, 2pi), subticks = 101), 
-            method = ArpackPackage(sigma = -0.00001, nev = 16));
-    end
-    return vlplot(b, ylims = (-10, 10), size = (300))
-end
+# # Bands
+# function normalbands(p, which = "armchair")
+#     if which == "armchair"
+#         kmin, kmax = (-2., 2.)
+#         axis = (0, 1)
+#         h = nanoribbonN(p, axis);
+#         b = bandstructure(h, cuboid((-2.,2.), subticks = 201),
+#             method = ArpackPackage(sigma = -0.00001, nev = 16));
+#         # a = vlplot(b, ylims = (-10, 10), size = (300))
+#     else
+#         kmin, kmax = (0., 2pi)
+#         axis = (1, 0)
+#         h = nanoribbonN(p, axis);
+#         b = bandstructure(h, cuboid((0, 2pi), subticks = 101), 
+#             method = ArpackPackage(sigma = -0.00001, nev = 16));
+#     end
+#     return vlplot(b, ylims = (-10, 10), size = (300))
+# end
 
-function scbands(p, which = "armchair")
-    if which == "armchair"
-        axis = (0,1)
-        h = nanoribbonS(p, axis);
-        b = bandstructure(h, cuboid((0,1.5), subticks = 51),
-            method = ArpackPackage(sigma = -0.00001, nev = 16));
-        a = vlplot(b, ylims = (-2, 2), size = (300))
-    else
-        axis = (1,0)
-        h = nanoribbonS(p, axis);
-        b = bandstructure(h, cuboid((0, 2pi), subticks = 301), 
-            method = ArpackPackage(sigma = -0.00001, nev = 16));
-        a = vlplot(b, ylims = (-10, 10), size = (300))
-    end
-    return a
-end
+# function scbands(p, which = "armchair")
+#     if which == "armchair"
+#         axis = (0,1)
+#         h = nanoribbonS(p, axis);
+#         b = bandstructure(h, cuboid((0,1.5), subticks = 51),
+#             method = ArpackPackage(sigma = -0.00001, nev = 16));
+#         a = vlplot(b, ylims = (-2, 2), size = (300))
+#     else
+#         axis = (1,0)
+#         h = nanoribbonS(p, axis);
+#         b = bandstructure(h, cuboid((0, 2pi), subticks = 301), 
+#             method = ArpackPackage(sigma = -0.00001, nev = 16));
+#         a = vlplot(b, ylims = (-10, 10), size = (300))
+#     end
+#     return a
+# end
 
-"angle in degrees "
+# "angle in degrees "
 
-function scbands(p, (nx, ny))
-    kpoints = 51
-    numbands = 8
-    axis = (ny, nx)
-    h = nanoribbonS(p, axis);
-#    return vlplot(h, maxdiameter = 4, plotlinks = false)
-    b = bandstructure(h, cuboid((-6, 6), subticks = kpoints), 
-            method = ArpackPackage(sigma = -0.0000, nev = numbands))
-    return vlplot(b, ylims = (-4, 4), size = (300))
-end
-function scbands(p, angle)
-    int_frac = rationalize(tan(angle*pi/180), tol = 1e-3)
-    nx = denominator(int_frac)
-    ny = numerator(int_frac)
-    kpoints = 51
-    numbands = 16
-    axis = (ny, nx)
-    h = nanoribbonS(p, axis);
-#    return vlplot(h, maxdiameter = 4, plotlinks = false)
-    b = bandstructure(h, cuboid((-6, 6), subticks = kpoints), 
-            method = ArpackPackage(sigma = -0.00001, nev = numbands))
-    return vlplot(b, ylims = (-10, 10), size = (300))
-end
+# function scbands(p, (nx, ny))
+#     kpoints = 51
+#     numbands = 8
+#     axis = (ny, nx)
+#     h = nanoribbonS(p, axis);
+# #    return vlplot(h, maxdiameter = 4, plotlinks = false)
+#     b = bandstructure(h, cuboid((-6, 6), subticks = kpoints), 
+#             method = ArpackPackage(sigma = -0.0000, nev = numbands))
+#     return vlplot(b, ylims = (-4, 4), size = (300))
+# end
+# function scbands(p, angle)
+#     int_frac = rationalize(tan(angle*pi/180), tol = 1e-3)
+#     nx = denominator(int_frac)
+#     ny = numerator(int_frac)
+#     kpoints = 51
+#     numbands = 16
+#     axis = (ny, nx)
+#     h = nanoribbonS(p, axis);
+# #    return vlplot(h, maxdiameter = 4, plotlinks = false)
+#     b = bandstructure(h, cuboid((-6, 6), subticks = kpoints), 
+#             method = ArpackPackage(sigma = -0.00001, nev = numbands))
+#     return vlplot(b, ylims = (-10, 10), size = (300))
+# end

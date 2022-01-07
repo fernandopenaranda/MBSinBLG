@@ -53,8 +53,8 @@ function filesstorage_settings(figname)
 end
 #fig2
 
-floattostring(vec::Array{Float64,1}) = [floattostring(vec[i]) for i in 1:length(vec)]
-floattostring(i::Float64) = "$(Int(i))"
+floattostring(vec::Array{Float32,1}) = [floattostring(vec[i]) for i in 1:length(vec)]
+floattostring(i::Float32) = "$(Int(i))"
 function writecsv(vec, p, name, taglist)
     karray = collect(Iterators.flatten(
     [collect(Iterators.flatten([append!([],vec[1][1]) 
@@ -85,15 +85,15 @@ end
 #read
 function readfig4data(datapath::String, angle = 0*pi/180)
     println("hey")
-    presets = read(joinpath(datapath,"presets.csv"), DataFrame,  delim = '\t')
+    presets = CSV.read(joinpath(datapath,"presets.csv"), DataFrame,  delim = '\t')
     println(presets)
-    data = read(joinpath(datapath,"psi.csv"), DataFrame, delim='\t')
-    return  map(x->parse(ComplexF64,x), data.psi)
+    data = CSV.read(joinpath(datapath,"psi.csv"), DataFrame, delim='\t')
+    return  map(x->parse(ComplexF32,x), data.psi)
 end
 
 function readfig4psi(datapath::String)
-    presets = read(joinpath(datapath,"presets.csv"), DataFrame,  delim = '\t')
-    data = read(joinpath(datapath,"psi.csv"), DataFrame, delim='\t')
+    presets = CSV.read(joinpath(datapath,"presets.csv"), DataFrame,  delim = '\t')
+    data = CSV.read(joinpath(datapath,"psi.csv"), DataFrame, delim='\t')
     return  data.psi
 end
 

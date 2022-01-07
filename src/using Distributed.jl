@@ -8,3 +8,9 @@ using Distributed
 @everywhere using Baselet, Arpack, StaticArrays, CSV, DataFrames, Dates
 @everywhere using Optim, ProgressMeter, Distributed
 @everywhere using PhysicalConstants.CODATA2018: ustrip, @u_str, ħ, k_B, m_e, e, μ_B
+
+
+using MBSinBLG, Quantica, StaticArrays, Parameters, LinearAlgebra, StatsBase, SharedArrays
+using Baselet, Arpack, StaticArrays, CSV, DataFrames, Dates
+using PhysicalConstants.CODATA2018: ustrip, @u_str, ħ, k_B, m_e, e, μ_B
+using Optim, ProgressMeter

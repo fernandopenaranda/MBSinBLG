@@ -30,7 +30,7 @@ CPR
 """
 function cpr(philist, p; nev = 16, kw...)
     ph = rectangle_squid(p; kw...)
-    elist = zeros(Float64, nev, length(philist))
+    elist = zeros(Float32, nev, length(philist))
     for i in 1:length(philist)
         s = spectrum(ph(phi = philist[i]), method = ArpackPackage(sigma = 1e-7, nev = nev))
         elist[:,i] = s.energies
