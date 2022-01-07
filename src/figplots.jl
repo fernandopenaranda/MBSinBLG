@@ -362,7 +362,7 @@ function fig7plot(path; kw...)
     return fig7plot(ϕs.phi, Matrix(ea), Matrix(eb), Matrix(ec), Matrix(ed); kw...)
 end
 
-function fig7plot(ϕs, ea, eb, ec, ed; ylims = (-0.007, 0.007))
+function fig7plot(ϕs, ea, eb, ec, ed; ylims = (-0.07, 0.07))
     fig = Figure(resolution = (500, 500), font = "Times New Roman") 
     axa = Axis(fig[1,1])
     axb = Axis(fig[1,2])

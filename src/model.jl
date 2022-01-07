@@ -89,9 +89,9 @@ function latBLG(p, θ)
     lat_slg = unitcell(lat0_slg, region = rotated_region)
     Quantica.transform!(r -> SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * r, lat_slg)
     lat_bot = lattice(Quantica.transform!(r -> r + SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] *
-         SA[0, -0.5*a0/sqrt(3.0), -dinter/2], copy(lat_slg)); names = (:Ab, :Bb))
+         SA[0, -0.5*a0/sqrt(3.0), -dinter/2], copy(lat_slg)); names = (:Ab, :Bb), type = Float32)
     lat_top = lattice(Quantica.transform!(r -> r + SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * 
-        SA[0, 0.5*a0/sqrt(3.0), dinter/2], copy(lat_slg)); names = (:At, :Bt))
+        SA[0, 0.5*a0/sqrt(3.0), dinter/2], copy(lat_slg)); names = (:At, :Bt), type = Float32)
     return lat_top, lat_bot
 end
 
