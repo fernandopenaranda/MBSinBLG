@@ -3,10 +3,10 @@
 ############################################################################################
 
 struct Fig4_presets
-    η::Float32
-    angle::Float32
-    iterations::Int32
-    nummodes::Int32
+    η::Float64
+    angle::Float64
+    iterations::Int64
+    nummodes::Int64
     selfy::Bool
 end
 
@@ -59,12 +59,12 @@ function ldosonlattice_rand_sc(p, η, angle = 0; nummodes = 4, selfy = false, kw
     s = spectrum(hd, method = ArpackPackage(sigma = 1e-7, nev = ifelse(nummodes == 4, 4, 8)))
     println(s.energies)
     if nummodes == 4
-        psi = Vector{Float32}(undef, Int(size(hd,1)*4))
+        psi = Vector{Float64}(undef, Int(size(hd,1)*4))
         psi .=  abs.(s.states[:,1])
         psi .+= abs.(s.states[:,2])
         psi .+= abs.(s.states[:,3])
         psi .+= abs.(s.states[:,4])
-        psi_ord = zeros(Float32, Int(size(ho,1)*4))
+        psi_ord = zeros(Float64, Int(size(ho,1)*4))
         count = 1
         for i in disord_indices
             psi_ord[4*i-3:4*i] = psi[count:count+3]
@@ -72,8 +72,8 @@ function ldosonlattice_rand_sc(p, η, angle = 0; nummodes = 4, selfy = false, kw
         end
         return psi_ord, psi_ord
     else nummodes == 8
-        psi1 =  Vector{Float32}(undef, Int(size(hd,1)*4))
-        psi2 =  Vector{Float32}(undef, Int(size(hd,1)*4))
+        psi1 =  Vector{Float64}(undef, Int(size(hd,1)*4))
+        psi2 =  Vector{Float64}(undef, Int(size(hd,1)*4))
         psi1 .=  abs.(s.states[:,1])
         psi1 .+= abs.(s.states[:,2])
         psi1 .+= abs.(s.states[:,7])
@@ -82,8 +82,8 @@ function ldosonlattice_rand_sc(p, η, angle = 0; nummodes = 4, selfy = false, kw
         psi2 .+= abs.(s.states[:,4])
         psi2 .+= abs.(s.states[:,5])
         psi2 .+= abs.(s.states[:,6])
-        psi_ord1 = zeros(Float32, Int(size(ho,1)*4))
-        psi_ord2 = zeros(Float32, Int(size(ho,1)*4))
+        psi_ord1 = zeros(Float64, Int(size(ho,1)*4))
+        psi_ord2 = zeros(Float64, Int(size(ho,1)*4))
         count = 1
         for i in disord_indices
             psi_ord1[4*i-3:4*i] = psi1[count:count+3]
