@@ -21,14 +21,12 @@ module MBSinBLG
     using Optim, ProgressMeter
     
     using PhysicalConstants.CODATA2018: ustrip, @u_str, ħ, k_B, m_e, e, μ_B
-    
-    export nanoribbonS, nanoribbonSA, nanoribbonSZ, Params, rectangle_weaklink, 
-        rectangle_randombounds_sc, splittingvsrotation, savespectrum, modelS,
-        spectrumvsphase, savepsi, ldosonlattice_averaged_sc, savespectrumvsphase,
-        Fig4_presets
 
-    export fig2run, fig3run, fig4run, fig5run, fig6run, fig7run, ldosonlattice
-    export fig2plot, fig3plot, fig4plot, fig5plot, fig6plot, fig7plot
+    export runfig2, runfig3, runfig4, runfig5, runfig6, runfig7 
+    export fig2plot, fig3plot, fig4plot, fig5plot, fig6plot, fig7plot, ldosonlattice
+
+    export nanoribbonS, nanoribbonSA, nanoribbonSZ, Params,  modelS, rectangle_weaklink, 
+        rectangle_randombounds_sc, ldosonlattice_averaged_sc
 
     include("model.jl")
     include("nanoribbon.jl")
