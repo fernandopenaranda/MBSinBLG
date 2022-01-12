@@ -286,18 +286,6 @@ git-tree-sha1 = "3f3a2501fa7236e9b911e0f7a588c657e822bb6d"
 uuid = "5ae413db-bbd1-5e63-b57d-d24a61df00f5"
 version = "2.2.3+0"
 
-[[deps.Electron]]
-deps = ["Base64", "FilePaths", "JSON", "Pkg", "Sockets", "URIParser", "UUIDs"]
-git-tree-sha1 = "a53025d3eabe23659065b3c5bba7b4ffb1327aa0"
-uuid = "a1bb12fb-d4d1-54b4-b10a-ee7951ef7ad3"
-version = "3.1.2"
-
-[[deps.ElectronDisplay]]
-deps = ["Base64", "Electron", "FilePaths", "IteratorInterfaceExtensions", "JSON", "Markdown", "TableShowUtils", "TableTraits"]
-git-tree-sha1 = "714865b8d0ec66d90283acc737da9e534307f5e6"
-uuid = "d872a56f-244b-5cc9-b574-2017b5b909a8"
-version = "1.0.1"
-
 [[deps.EllipsisNotation]]
 git-tree-sha1 = "18ee049accec8763be17a933737c1dd0fdf8673a"
 uuid = "da5c29d0-fa7d-589e-88eb-ea29b0a81949"
