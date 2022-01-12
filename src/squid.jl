@@ -1,8 +1,10 @@
 """
-SQUID geometry. Self energy on the zigzag edge with a phase difference (-ϕ/2 for x<0 ϕ/2 for x>0)
+Implements configuration B, i.e. BLG in Bernal stacking with self energy on both the ZZ and
+the AC edges. There is a different phase difference between left and right sides of the 
+weak link (-ϕ/2 for x<0 ϕ/2 for x>0).
 Neither smoothness nor leads are implemented. Also disorder and rotation are not considered.
 """
-function rectangle_squid(p)
+function rectangle_weaklink(p)
     (; Ls, Δ, Ws) = p
     (; model0, field!, modelinter) = modelS(p)
     lat_top, lat_bot = MBSinBLG.latBLG(p, 0) #0 angle rotation
@@ -26,10 +28,13 @@ function rectangle_squid(p)
 end
 
 """
-CPR
+    spectrumvsphase(philist, p; nev = 16, kw...)
+computes a number nev of eigenvalues as a function of the phase difference across the weak
+link. 
+    see: rectangle_weakling(::Params()), Params(), modelS()
 """
-function cpr(philist, p; nev = 16, kw...)
-    ph = rectangle_squid(p; kw...)
+function spectrumvsphase(philist, p; nev = 16, kw...)
+    ph = rectangle_weaklink(p; kw...)
     elist = zeros(Float64, nev, length(philist))
     for i in 1:length(philist)
         s = spectrum(ph(phi = philist[i]), method = ArpackPackage(sigma = 1e-7, nev = nev))
@@ -37,4 +42,3 @@ function cpr(philist, p; nev = 16, kw...)
     end
     return philist, elist
 end
-

@@ -1,3 +1,10 @@
+"""
+    `nanoribbonN(p, (nx, ny); mono = false)`
+builds a normal infinite graphene nanoribbon with Bravais vector: `br =(nx, ny)` and parameters: 
+`p::Params()`. `mono` specifies whether we have SLG (`mono = true`) or 
+BLG in Bernal stacking (`mono = false`).
+    see: `Params()`, `modelN()`
+"""
 function nanoribbonN(p, (nx, ny); mono = false)
     (; Ln, Ls, U, a0) = p
     (; model0, field!) = modelN(p)
@@ -16,7 +23,16 @@ function nanoribbonN(p, (nx, ny); mono = false)
     return h
 end
 
-function nanoribbonS(p, (nx, ny); mono = false, dxS = 100.)
+"""
+    `nanoribbonS(p, (nx, ny); mono = false, dxS = 10.)`
+builds an infinite graphene nanoribbon with Bravais vector: `br =(nx, ny)`, parameters: 
+`p::Params()` with induced superconductivity along the edges with a characteristic
+penetration given by: `dxS` in units of a0.
+`mono` keyword specifies whether we have SLG (`mono = true`) or BLG in Bernal stacking
+(`mono = false`).
+    see: `Params()`, `modelS()`
+"""
+function nanoribbonS(p, (nx, ny); mono = false, dxS = 10.)
     (; Ln, Ls, Δ, a0, τ, d, Ws) = p
     (; model0, field!) = modelS(p)
     lat = mono ? latSLG(p) : latBLG_unbounded(p)
@@ -46,6 +62,10 @@ nanoribbonNZ(p = Params(); kw...) = nanoribbonN(p, (1, 0); kw...)
 nanoribbonSA(p = Params(); kw...) = nanoribbonS(p, (0, 1); kw...)
 nanoribbonSZ(p = Params(); kw...) = nanoribbonS(p, (1, 0); kw...)
 
+##################################
+# Deprecated: rotated nanoribbons
+##################################
+
 # function nanoribbonN(p, (nx, ny))
 #     (; Ln, Ls) = p
 #     (; model0, field!) = modelN(p)
@@ -64,7 +84,8 @@ nanoribbonSZ(p = Params(); kw...) = nanoribbonS(p, (1, 0); kw...)
 #     (; model0, field!, modelinter) = modelS(p)
 #     lat_top, lat_bot = latBLG(p, θ)
    
-#     # regionS(r) = abs(dot(perpaxis, r)) > ifelse(iszero(Ls), (round(0.5*Ln/a0)-WS)*a0, Ln/2) #0.9
+#     # regionS(r) = abs(dot(perpaxis, r)) > ifelse(iszero(Ls), 
+            # (round(0.5*Ln/a0)-WS)*a0, Ln/2) #0.9
 #     # regionS(r, dr) = regionS(r)
 #     regionS(r) = abs(r[1]) >= Ln/2 - Ls || abs(r[2]) >= W/2 - Ws
 #     regionS(r, dr) = regionS(r)

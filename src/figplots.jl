@@ -180,20 +180,12 @@ ldosonlattice(psi, h0, scheme = "blues") = vlplot(h0, psi,
     maxdiameter =30, plotlinks = false, discretecolorscheme = :gray, 
     labels = ("x (nm)", "y (nm)")) 
 
-# logldosonlattice(psi, h0) = vlplot(h0, -log.(abs.(psi)), 
-#     sitesize = DensityShader(), sitecolor = DensityShader(), siteopacity = 0.5,
-#     mindiameter = maximum(-log.(abs.(psi)))*4/5, size = (300), colorscheme = "blues", sitestroke = nothing,
-#     maxdiameter =maximum(-log.(abs.(psi))), plotlinks = false, discretecolorscheme = :gray, 
-#     labels = ("x (nm)", "y (nm)")) 
-
 latticeplot(psi, h0) = vlplot(h0, psi, 
     sitesize = DensityShader(), sitecolor = DensityShader(), siteopacity = 0.5,
     mindiameter = 1e-1, size = (300), colorscheme = "greys", sitestroke = nothing,
     maxthickness = 0.001, plotlinks = false, discretecolorscheme = :gray, 
     labels = ("x (nm)", "y (nm)"))
 #___________________________________________________________________________________________
-
-
 
 #########################################
 # # LDOS with KPM (deprecated)
@@ -216,6 +208,7 @@ latticeplot(psi, h0) = vlplot(h0, psi,
 # # plot
 # data = CSV.read(joinpath(datapath), DataFrame, delim='\t')
 # panelrightfig3(q[1], adata.y, bdata.y, cdata.y, ddata.y)
+
 ############################################################################################
 # Figure 5
 ############################################################################################
@@ -369,21 +362,15 @@ function fig7plot(ϕs, ea, eb, ec, ed; ylims = (-0.7, 0.7))
     axc = Axis(fig[2,1])
     axd = Axis(fig[2,2])
     mean = size(ea, 1) ÷ 2
-    println(size(eb[1,:]))
-    println(size(ec[1,:]))
-    # lines!(axa, ϕs/π, ea[1,:], color = :gray)
-    # lines!(axb, ϕs/π, eb[1,:], color = :gray)
-    # lines!(axc, ϕs/π, ec[1,:], color = :gray)
-    # lines!(axd, ϕs/π, ed[1,:], color = :gray)
-    for i in 2:size(ea, 1)
+    for i in 1:size(ea, 1)
         lines!(axa, ϕs/π, ea[i,:], color = ifelse(in(i, mean-3:mean+4),
             ifelse(in(i,mean-1:mean+2),  (:red, 1), (:blue, 0.5)), :gray), opacity = .5)
-        lines!(axb, ϕs/π, eb[i,:], color = ifelse(in(i, mean-3:mean+4),
-            ifelse(in(i,mean-1:mean+2),  (:red, 1), (:blue, 0.5)), :gray), opacity = .5)
+        lines!(axb, ϕs/π, eb[i,:], color = 
+            ifelse(in(i,mean-1:mean+2),  (:red, 1), :gray), opacity = .5)
         lines!(axc, ϕs/π, ec[i,:], color = ifelse(in(i, mean-3:mean+4),
             ifelse(in(i,mean-1:mean+2),  (:red, 1), (:blue, 0.5)), :gray), opacity = .5)
-        lines!(axd, ϕs/π, ed[i,:], color = ifelse(in(i, mean-3:mean+4),
-            ifelse(in(i,mean-1:mean+2),  (:red, 1), (:blue, 0.5)), :gray), opacity = .5)
+        lines!(axd, ϕs/π, ed[i,:], color = 
+            ifelse(in(i,mean-1:mean+2),  (:red, 1),  :gray), opacity = .5)
     end
     axa.ylabel = "E [meV]"
     axa.xlabel = "Δϕ/π"
@@ -407,43 +394,6 @@ function fig7plot(ϕs, ea, eb, ec, ed; ylims = (-0.7, 0.7))
     hideydecorations!(axd, grid = false)
     fig
 end
-
-#########
-# Supplementary: FigSA
-########
-
-function figSAplot(patha, pathb)
-    Ez, ea = readspectrum(patha)
-    _, eb = readspectrum(pathb)
-    return Ez, ea, eb#fig6plot(Ez.EZ, Matrix(ea), Matrix(eb))
-end
-
-function figSAplot(η, ea, eb,  ylims = (-0.2, 0.2), ylimsb = (-0.2, 0.2))
-    fig = Figure(resolution = (500, 250), font = "Times New Roman") 
-    axa = Axis(fig[1, 1], yaxisposition = :left)
-    axb = Axis(fig[1, 2], yaxisposition = :left)
-    mean = size(ea, 1) ÷ 2
-    lines!(axa,  η, ea[1,:], color = :gray, yaxisposition = :left)
-    lines!(axb, η, eb[1,:], color = :gray, yaxisposition = :left)
-    for i in 2:size(ea, 1)
-        lines!(axa, η, ea[i,:], color = ifelse(in(i, mean-3:mean+4), 
-            ifelse(in(i,mean-1:mean+2), (:red, 1), (:blue, 0.4)), :gray), opacity = .5, 
-            yaxisposition = :right)
-        lines!(axb, η, eb[i,:], color = ifelse(in(i, mean-1:mean+2), 
-            :red, :gray), opacity = .5, yaxisposition = :right)
-    end
-    axa.xlabel = " η"
-    axb.xlabel = " η"
-    axa.ylabel = "E [meV]"
-    axb.ylabel = "E [meV]"
-    xlims!(axa, (0, maximum(η)))
-    xlims!(axb, (0, maximum(η)))
-    hideydecorations!(axb, grid = false)
-    ylims!(axa, ylims)
-    ylims!(axb, ylimsb)
-    fig
-end
-
 
 #########
 # Extra
@@ -509,4 +459,40 @@ end
 #     b = bandstructure(h, cuboid((-6, 6), subticks = kpoints), 
 #             method = ArpackPackage(sigma = -0.00001, nev = numbands))
 #     return vlplot(b, ylims = (-10, 10), size = (300))
+# end
+
+#########
+# Supplementary: FigSA
+########
+
+# function figSAplot(patha, pathb)
+#     Ez, ea = readspectrum(patha)
+#     _, eb = readspectrum(pathb)
+#     return Ez, ea, eb#fig6plot(Ez.EZ, Matrix(ea), Matrix(eb))
+# end
+
+# function figSAplot(η, ea, eb,  ylims = (-0.2, 0.2), ylimsb = (-0.2, 0.2))
+#     fig = Figure(resolution = (500, 250), font = "Times New Roman") 
+#     axa = Axis(fig[1, 1], yaxisposition = :left)
+#     axb = Axis(fig[1, 2], yaxisposition = :left)
+#     mean = size(ea, 1) ÷ 2
+#     lines!(axa,  η, ea[1,:], color = :gray, yaxisposition = :left)
+#     lines!(axb, η, eb[1,:], color = :gray, yaxisposition = :left)
+#     for i in 2:size(ea, 1)
+#         lines!(axa, η, ea[i,:], color = ifelse(in(i, mean-3:mean+4), 
+#             ifelse(in(i,mean-1:mean+2), (:red, 1), (:blue, 0.4)), :gray), opacity = .5, 
+#             yaxisposition = :right)
+#         lines!(axb, η, eb[i,:], color = ifelse(in(i, mean-1:mean+2), 
+#             :red, :gray), opacity = .5, yaxisposition = :right)
+#     end
+#     axa.xlabel = " η"
+#     axb.xlabel = " η"
+#     axa.ylabel = "E [meV]"
+#     axb.ylabel = "E [meV]"
+#     xlims!(axa, (0, maximum(η)))
+#     xlims!(axb, (0, maximum(η)))
+#     hideydecorations!(axb, grid = false)
+#     ylims!(axa, ylims)
+#     ylims!(axb, ylimsb)
+#     fig
 # end

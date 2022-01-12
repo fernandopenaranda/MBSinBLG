@@ -1,44 +1,48 @@
 ############################################################################################
-# Saving functions to store the output of figXrun() where X ∈ {2, 3, 4, 5, 6, 7}
+# Functions to write/read the output of figXrun() where X ∈ {2, 3, 4, 5, 6, 7} as .csv files
+############################################################################################
 
-using CSV: write, read
+# using CSV: write, read
 
-"save data"
+#######
+# WRITE
+#######
+
 function savepsi(figname, p::Params, psi)
     path_str = filesstorage_settings(figname)
-    write(join([path_str,"/presets.csv"]), DataFrame(type2dict(p)))
+    CSV.write(join([path_str,"/presets.csv"]), DataFrame(type2dict(p)))
     psi_data = DataFrame(psi = psi)
-    write(join([path_str,"/psi.csv"]), psi_data; delim = '\t')
+    CSV.write(join([path_str,"/psi.csv"]), psi_data; delim = '\t')
     return path_str
 end
 
 function savespectrum(figname, p::Params, sp1, sp2)
     path_str = filesstorage_settings(figname)
-    write(join([path_str,"/presets.csv"]), DataFrame(type2dict(p)))
-    write(join([path_str,"/spectrum.csv"]),  DataFrame(sp1, :auto))
+    CSV.write(join([path_str,"/presets.csv"]), DataFrame(type2dict(p)))
+    CSV.write(join([path_str,"/spectrum.csv"]),  DataFrame(sp1, :auto))
     psi_data = DataFrame(EZ = sp2)
-    write(join([path_str,"/EZ.csv"]), psi_data; delim = '\t')
+    CSV.write(join([path_str,"/EZ.csv"]), psi_data; delim = '\t')
     return path_str
 end
 
 "save data"
 function savespectrum(figname, p::Params, sp::Quantica.Spectrum)
     path_str = filesstorage_settings(figname)
-    write(join([path_str,"/presets.csv"]), DataFrame(type2dict(p)))
+    CSV.write(join([path_str,"/presets.csv"]), DataFrame(type2dict(p)))
     psi_data = DataFrame(psi = sp.states[:,1])
-    write(join([path_str,"/psi.csv"]), psi_data; delim = '\t')
+    CSV.write(join([path_str,"/psi.csv"]), psi_data; delim = '\t')
     return path_str
 end
 
-function savecprs(figname, p::Params, phi, ea, eb, ec, ed)
+function savespectrumvsphase(figname, p::Params, phi, ea, eb, ec, ed)
     path_str = filesstorage_settings(figname)
-    write(join([path_str,"/presets.csv"]), DataFrame(type2dict(p)))
+    CSV.write(join([path_str,"/presets.csv"]), DataFrame(type2dict(p)))
     phi_data = DataFrame(phi = collect(phi))
-    write(join([path_str,"/phi.csv"]), phi_data; delim = '\t')
-    write(join([path_str,"/cpra.csv"]),  DataFrame(ea, :auto))
-    write(join([path_str,"/cprb.csv"]),  DataFrame(eb, :auto))
-    write(join([path_str,"/cprc.csv"]),  DataFrame(ec, :auto))
-    write(join([path_str,"/cprd.csv"]),  DataFrame(ed, :auto))
+    CSV.write(join([path_str,"/phi.csv"]), phi_data; delim = '\t')
+    CSV.write(join([path_str,"/cpra.csv"]),  DataFrame(ea, :auto))
+    CSV.write(join([path_str,"/cprb.csv"]),  DataFrame(eb, :auto))
+    CSV.write(join([path_str,"/cprc.csv"]),  DataFrame(ec, :auto))
+    CSV.write(join([path_str,"/cprd.csv"]),  DataFrame(ed, :auto))
     return path_str
 end
 
@@ -72,19 +76,19 @@ function writecsv(vec, p, name, taglist)
 end
 
 function savecsv(figname, presetsarray::AbstractArray, data::DataFrame) 
-    path_str = filesstorage_settings()
+    path_str = filesstorage_settings(figname)
     for i in 1:length(presetsarray)
-        write(join([path_str,"/presets","$(i)",".csv"]),
+        CSV.write(join([path_str,"/presets","$(i)",".csv"]),
             DataFrame(type2dict(presetsarray[i])))
     end
-    write(join([path_str,"/$(figname).csv"]), data; delim = '\t')
+    CSV.write(join([path_str,"/$(figname).csv"]), data; delim = '\t')
     println(join([path_str,"/$(figname).csv"]))
 end 
 
-
-#read
+#######
+# READ
+#######
 function readfig4data(datapath::String, angle = 0*pi/180)
-    println("hey")
     presets = CSV.read(joinpath(datapath,"presets.csv"), DataFrame,  delim = '\t')
     println(presets)
     data = CSV.read(joinpath(datapath,"psi.csv"), DataFrame, delim='\t')
@@ -92,14 +96,12 @@ function readfig4data(datapath::String, angle = 0*pi/180)
 end
 
 function readfig4psi(datapath::String)
-    presets = CSV.read(joinpath(datapath,"presets.csv"), DataFrame,  delim = '\t')
     data = CSV.read(joinpath(datapath,"psi.csv"), DataFrame, delim='\t')
     return  data.psi
 end
 
 function readspectrum(datapath::String)
     y = CSV.read(join([datapath,"/spectrum.csv"]), DataFrame)
-    println("hey")
     x = CSV.read(join([datapath,"/EZ.csv"]), DataFrame)
     return x, y
 end

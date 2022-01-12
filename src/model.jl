@@ -14,10 +14,11 @@ const σx = SA[0 1; 1 0]
 const σy = SA[0 -im; im 0]
 const σz = SA[1 0; 0 -1]
 
+# Default presets
 @with_kw struct Params @deftype Float64
     # Units: nm, meV
     # Params AB bernal bilayer obtained from DFT calculations: 
-    # ref -> https://arxiv.org/pdf/1511.06706.pdf (flag <-:dft)
+    # ref -> https://arxiv.org/pdf/1511.06706.pdf 
     scale = 1                  #scaling parameter
     a0 = 0.246 * scale
     dinter = 1.36 * a0/scale  #Note that we leave dinter unaltered by scale
@@ -49,6 +50,11 @@ const σz = SA[1 0; 0 -1]
     g = 2
 end
 
+"""
+    latBLG_unbounded(p = Params()
+creates an unbounded lattice for the BLG in Bernal stacking
+see: Params()
+"""
 function latBLG_unbounded(p = Params())
     @unpack a0, dinter = p
     sAbot = sublat((0.0,-1.0a0/sqrt(3.0), - dinter/2); name = :Ab)
@@ -60,24 +66,12 @@ function latBLG_unbounded(p = Params())
     return lat
 end
 
-
-# function latBLG_unbounded(p, θ)
-#     (; a0, dinter, Ln, W) = p
-#     lat0_slg = LP.honeycomb(; a0, dim = 3)
-#     function rotated_region(r)
-#         r´ = SA[r[1], floor(abs(r[2])/(0.5*√3 * a0)) * sign(r[2])*(0.5*√3 * a0), r[3]]
-#         r´ = SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * r´
-#         return abs(r´[1]) <= Ln/2 && abs(r´[2]) <= W/2
-#     end
-#     lat_slg = unitcell(lat0_slg, region = rotated_region)
-#     Quantica.transform!(r -> SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * r, lat_slg)
-#     lat_bot = lattice(Quantica.transform!(r -> r + SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] *
-#          SA[0, -0.5*a0/sqrt(3.0), -dinter/2], copy(lat_slg)); names = (:Ab, :Bb), bravais = br)
-#     lat_top = lattice(Quantica.transform!(r -> r + SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * 
-#         SA[0, 0.5*a0/sqrt(3.0), dinter/2], copy(lat_slg)); names = (:At, :Bt), bravais = br)
-#     return lat_top, lat_bot
-# end
-
+"""
+    latBLG(p, θ)
+creates an unbounded lattice for the BLG in Bernal stacking with bravais vectors rotated by
+θ degrees wrt latBLG_unbounded(::Params()).
+    see: latBLG_unbounded(::Params()), Params()
+"""
 function latBLG(p, θ)
     (; a0, dinter, Ln, W) = p
     lat0_slg = LP.honeycomb(; a0, dim = 3)
@@ -88,15 +82,22 @@ function latBLG(p, θ)
     end
     lat_slg = unitcell(lat0_slg, region = rotated_region)
     Quantica.transform!(r -> SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * r, lat_slg)
-    lat_bot = lattice(Quantica.transform!(r -> r + SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] *
-         SA[0, -0.5*a0/sqrt(3.0), -dinter/2], copy(lat_slg)); names = (:Ab, :Bb), type = Float64)
-    lat_top = lattice(Quantica.transform!(r -> r + SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * 
-        SA[0, 0.5*a0/sqrt(3.0), dinter/2], copy(lat_slg)); names = (:At, :Bt), type = Float64)
+    lat_bot = lattice(Quantica.transform!(r -> r + 
+        SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * SA[0, -0.5*a0/sqrt(3.0), -dinter/2], 
+        copy(lat_slg)); names = (:Ab, :Bb), type = Float64)
+    lat_top = lattice(Quantica.transform!(r -> r + 
+        SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * SA[0, 0.5*a0/sqrt(3.0), dinter/2], 
+        copy(lat_slg)); names = (:At, :Bt), type = Float64)
     return lat_top, lat_bot
 end
 
 latSLG(p = Params()) = LP.honeycomb(; a0 = p.a0, dim = Val(3))
 
+"""
+    `modelN(p = Params())`
+Hamiltonian terms of the normal system (without induced superconductivity):
+    see: `Params()`
+"""
 function modelN(p = Params())
     @unpack a0, dinter, dintra, dinter_warp, Ls, Ln, W, μN, μS, t0, t1,
             t3, Δ, λ, g, U, U_dimer, α, scale, EZ, E = p
@@ -133,6 +134,11 @@ function modelN(p = Params())
     return (; model0, field!)
 end
 
+"""
+    `modelS(p = Params())`
+Hamiltonian terms of the proximitized system:
+    see: `Params()`
+"""
 function modelS(p = Params())
     @unpack a0, dinter, dintra, dinter_warp, Ls, Ln, W, μN,μS , t0, t1,
             t3, Δ, λ, g, U, U_dimer, α, scale, EZ, E = p
@@ -168,3 +174,27 @@ function modelS(p = Params())
 
     return (; model0, field!, modelinter)
 end
+
+############
+## Deprecated
+############
+
+# function latBLG_unbounded(p, θ)
+#     (; a0, dinter, Ln, W) = p
+#     lat0_slg = LP.honeycomb(; a0, dim = 3)
+#     function rotated_region(r)
+#         r´ = SA[r[1], floor(abs(r[2])/(0.5*√3 * a0)) * sign(r[2])*(0.5*√3 * a0), r[3]]
+#         r´ = SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * r´
+#         return abs(r´[1]) <= Ln/2 && abs(r´[2]) <= W/2
+#     end
+#     lat_slg = unitcell(lat0_slg, region = rotated_region)
+#     Quantica.transform!(r -> SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * r, lat_slg)
+#     lat_bot = lattice(Quantica.transform!(r -> 
+#    r + SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] *
+#          SA[0, -0.5*a0/sqrt(3.0), -dinter/2], copy(lat_slg)); 
+#           names = (:Ab, :Bb), bravais = br)
+#     lat_top = lattice(Quantica.transform!(r -> r + 
+#         SA[cos(θ) -sin(θ) 0; sin(θ) cos(θ) 0; 0 0 1] * SA[0, 0.5*a0/sqrt(3.0), dinter/2], 
+#         copy(lat_slg)); names = (:At, :Bt), bravais = br)
+#     return lat_top, lat_bot
+# end

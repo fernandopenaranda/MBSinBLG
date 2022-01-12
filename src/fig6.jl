@@ -28,19 +28,19 @@ function runfig6()
 
 #############
 
-    p = Params(Ln = 1500, W = 1500, Ls = 20, Ws = 20, scale = 40, λ = 5, α = 0,   
-    Δ = 1, d = 0, τ = 1)
+    # p = Params(Ln = 1500, W = 1500, Ls = 20, Ws = 20, scale = 40, λ = 5, α = 0,   
+    # Δ = 1, d = 0, τ = 1)
 
-    p = reconstruct(p, EZ = SA[0, 2, 0], μN = 0.6)
-    presets_fig = Fig4_presets(0.01, 2π/180, 0, 8, true)
-    data = ldosonlattice_averaged_sc(p, presets_fig)
-    savepsi("fig6psi3", p, data[1])
-    savepsi("fig6psi3", p, data[2])
+    # p = reconstruct(p, EZ = SA[0, 2, 0], μN = 0.6)
+    # presets_fig = Fig4_presets(0.01, 2π/180, 0, 8, true)
+    # data = ldosonlattice_averaged_sc(p, presets_fig)
+    # savepsi("fig6psi3", p, data[1])
+    # savepsi("fig6psi3", p, data[2])
 
-    p = reconstruct(p, EZ = SA[0, 4, 0], μN = 1.192)
-    presets_fig = Fig4_presets(0.01, 2π/180, 0, 4, true)
-    data = ldosonlattice_averaged_sc(p, presets_fig)
-    savepsi("fig6psi3", p, data[1])
+    # p = reconstruct(p, EZ = SA[0, 4, 0], μN = 1.192)
+    # presets_fig = Fig4_presets(0.01, 2π/180, 0, 4, true)
+    # data = ldosonlattice_averaged_sc(p, presets_fig)
+    # savepsi("fig6psi3", p, data[1])
 
 
     # PANELS e-f
@@ -50,7 +50,7 @@ function runfig6()
     sp = splittingvsrotation(reconstruct(p, Ln = 400, EZ = SA[0, 4, 0], μN = 1.192), 0:.25:10, true, ϕ0 = pi)
     savespectrum("fig6", p, sp[1], sp[2])
 
-    sp = splittingvsrotation(reconstruct(p, Ln = 400, EZ = SA[0, 4, 0], μN = 0.6), 0:.5:10, true, ϕ0 = pi)
+    sp = splittingvsrotation(reconstruct(p, Ln = 600, EZ = SA[0, 4, 0], μN = 0.6), 0:.5:10, true, ϕ0 = pi)
     savespectrum("fig6", p, sp[1], sp[2])
 
     # Study vs spectrum vs disorder (not included in the manuscript)
@@ -119,4 +119,19 @@ function sims()
         # data = ldosonlattice_averaged_sc(p, presets_fig)
         # savepsi("fig6psieta0.001rot2_D_1500x1500_f32", p, data[1])
     end
+end
+
+
+function simsrot()
+    p = Params(Ln = 2000, W = 2000, Ls = 40, Ws = 40, scale = 40, λ = 5, α = 0,   
+    Δ = 1, d = 0, τ = 1)
+
+    sp = splittingvsrotation(reconstruct(p, Ln = 400, EZ = SA[0, 4, 0], μN = 0.6), 0:.5:10, true, ϕ0 = pi)
+    savespectrum("fig6", p, sp[1], sp[2])
+
+    sp = splittingvsrotation(reconstruct(p, Ln = 200, EZ = SA[0, 4, 0], μN = 0.6), 0:.5:10, true, ϕ0 = pi)
+    savespectrum("fig6", p, sp[1], sp[2])
+
+    sp = splittingvsrotation(reconstruct(p, Ln = 600, EZ = SA[0, 4, 0], μN = 0.6), 0:.5:10, true, ϕ0 = pi)
+    savespectrum("fig6", p, sp[1], sp[2])
 end

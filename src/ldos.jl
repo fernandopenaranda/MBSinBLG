@@ -10,10 +10,13 @@ struct Fig4_presets
     selfy::Bool
 end
 
-"average ldos weights of a number: Fig4_presets.nummodes of inner eigenvalues of a system 
+"
+    ldosonlattice_averaged_sc(p, fig_p::Fig4_presets; kw...) 
+average ldos weights of a number: Fig4_presets.nummodes of inner eigenvalues of a system 
 built with parameters p and  a given rotation angle Fig4_presets.angle and disorder 
 model Fig4_presets.angle.  The output is averaged overa a number of disorder realizations
-specified by Fig4_presets.iterations."
+specified by Fig4_presets.iterations.
+    see: Fig4_presets, ldosonlattice_rand_sc, rectangle_randombounds_sc "
 
 function ldosonlattice_averaged_sc(p, fig_p::Fig4_presets; kw...) 
     ldosonlattice_averaged_sc(p, fig_p.η, fig_p.angle,
@@ -24,38 +27,35 @@ function ldosonlattice_averaged_sc(p, η, angle = 0, iterations = 5; nummodes = 
     selfy = false, kw...) 
     println(nummodes)
     psi1, psi2 = ldosonlattice_rand_sc(p, η, angle, nummodes = nummodes, selfy = selfy; kw...)
-    # for i in 1:iterations
-    #     psis = ldosonlattice_rand_sc(p, η, angle, nummodes = nummodes, selfy = selfy; kw...)
-    #     psi1 .+= psis[1]
-    #     psi2 .+= psis[2]
-    # end
-    # psi ./= iterations +1
+    for i in 1:iterations
+        psis = ldosonlattice_rand_sc(p, η, angle, nummodes = nummodes, selfy = selfy; kw...)
+        psi1 .+= psis[1]
+        psi2 .+= psis[2]
+    end
+    psi ./= iterations +1
     return psi1, psi2
 end
 
-
 "KPM calculation of localdensity of states at a site ind for the bounded system"
 function ldos(params, ind, η, angle = 0.0; order = 300000, bandrange = missing, kw...)
-    sidecontacts = true
-    h = rectangle_randombounds_sc(params, angle, η, sidecontacts = sidecontacts; kw...);
+    h = rectangle_randombounds_sc(params, angle, η; kw...);
     si = SMatrix{4,4}(Diagonal(SA[1,1,-1,-1]))
     km = ketmodel(si, indices = ind)
     dos = dosKPM(h, ket = km, bandrange = bandrange; order = order)
     return dos
 end
 
-"returns the wavefunctions of nev inner eigenvaluesfor a system, created by 
-       rectangle_randombounds_sc"
-
+"""
+ldosonlattice_rand_sc(p, η, angle = 0; nummodes = 4, selfy = false, kw...)
+returns the wavefunctions of nev inner eigenvalues for a system, created by 
+       rectangle_randombounds_sc()
+"""
 function ldosonlattice_rand_sc(p, η, angle = 0; nummodes = 4, selfy = false, kw...)
-    ho = rectangle_randombounds_sc(p, angle, 0, sidecontacts = true, selfy = selfy);
-    hd = rectangle_randombounds_sc(p, angle, η, sidecontacts = true, selfy = selfy; kw...);
-
+    ho = rectangle_randombounds_sc(p, angle, 0, selfy = selfy);
+    hd = rectangle_randombounds_sc(p, angle, η, selfy = selfy; kw...);
     posd = sitepositions(hd)
-    
     positionsdisordered(r) = r in posd ? true : false
     disord_indices = siteindices(ho, region = positionsdisordered)
-
     s = spectrum(hd, method = ArpackPackage(sigma = 1e-7, nev = ifelse(nummodes == 4, 4, 8)))
     println(s.energies)
     if nummodes == 4

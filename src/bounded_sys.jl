@@ -1,16 +1,13 @@
-
 "builds the hamiltonian of BLG with a random model implemented 
-on the edges of the system see `rectangle` we also add two possible SC configurations
-(square mask not yet implemented),
-the degree of disorder is parametrized by a value `η` which determines the average number
+on the edges of the system see `rectangle` we also add two possible SC configurations: 
+A and B in the manuscript.
+The amount of disorder is parametrized by a value `η` which determines the average number
 of atom vacancies in the edges. 
     `η = 0` -> crystalographic edges
-    `η = 0.` is the default 
-we can control the rotation of the lattices w.r.t the SC using the keyword `θ`"
+we can control the rotation of the lattices w.r.t the SC leads using the keyword `θ`"
 
-function rectangle_randombounds_sc(p, θ = 0, η = 0.; sidecontacts = false, 
-        selfy = false, ϕ0 = 0)
-    (; Ln, Ls, Δ, a0, τ, d, W, Ws) = p
+function rectangle_randombounds_sc(p, θ = 0, η = 0.; selfy = false, ϕ0 = 0)
+    (; Ls, Δ, Ws) = p
     (; model0, field!, modelinter) = modelS(p)
     lat_top, lat_bot = latBLG(p, θ)
              
@@ -27,21 +24,29 @@ function rectangle_randombounds_sc(p, θ = 0, η = 0.; sidecontacts = false,
     vacancies(r) = sample([false, true], StatsBase.Weights([1-η, η])) * self_region(r)
     
     # HAMILTONIAN BUILD
-    h_top = lat_top |> hamiltonian(model0; orbitals = Val(4)) |> unitcell(mincoordination = 5, region = !vacancies)    
-    h_bot = lat_bot |> hamiltonian(model0; orbitals = Val(4)) |> unitcell(mincoordination = 5, region = !vacancies)
+    h_top = lat_top |> hamiltonian(model0; orbitals = Val(4)) |>
+        unitcell(mincoordination = 5, region = !vacancies)    
+    h_bot = lat_bot |> hamiltonian(model0; orbitals = Val(4)) |>
+        unitcell(mincoordination = 5, region = !vacancies)
      ph = Quantica.combine(h_top, h_bot; coupling = modelinter) |> 
-        parametric(field!, sCself!) 
+        parametric(field!, sCself!)
+    ## checking vacancy probability
     if η !=0
         sitesinhdis = length(collect(siteindices(ph(ϕ=0))))
         println(sitesinhdis)
-        normalsites, allsites = sitesinhord(lat_top, lat_bot, self_region, model0, modelinter)
-        # println(scsites)
+        normalsites, allsites = 
+            sitesinhord(lat_top, lat_bot, self_region, model0, modelinter)
         println("vacancy probability: ", 1-(sitesinhdis-normalsites)/(allsites-normalsites))
     else nothing 
     end
     return ph(ϕ = ϕ0)
 end
 
+"""
+    sitesinhord(latt, latb, self_region, model, modelinter)
+returns the number of normal sites and the total number of sites in the non-disordered lattice 
+    see: rectangle_randombounds_sc()
+"""
 function sitesinhord(latt, latb, self_region, model, modelinter)
     h_top = latt |> hamiltonian(model; orbitals = Val(4))
     h_bot = latb |> hamiltonian(model; orbitals = Val(4))
@@ -52,11 +57,10 @@ function sitesinhord(latt, latb, self_region, model, modelinter)
     allsites = length(collect(siteindices(Quantica.combine(h_top |> 
         unitcell(mincoordination = 5), h_bot |> 
             unitcell(mincoordination = 5); coupling = modelinter))))
-
     return normalsites, allsites
 end
 
-# Extra
+# Deprecated terms in H (explicit construction of the leads)
 # ONSITE SC MODEL (transparencies... disabled by default)
 # SCo! = @onsite!((o, r) -> o + smooth_method(r) * Δ * σyτy)
 # SCh! = @hopping!((t, r, dr) -> t * (1-smooth_method(r));
