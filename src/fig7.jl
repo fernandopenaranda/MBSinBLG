@@ -23,7 +23,7 @@ end
 #     elist = zeros(Float64, nev, length(Wlist))
 #     for i in 1:length(Wlist)
 #         p = reconstruct(p, W = Wlist[i])
-#         ph = rectangle_squid(p; kw...)
+#         ph = rectangle_weaklink(p; kw...)
 #         s = spectrum(ph(phi = ϕ0), method = ArpackPackage(sigma = 1e-7, nev = nev))
 #         elist[:,i] = s.energies
     
@@ -52,7 +52,7 @@ end
 #     elist = zeros(Float64, nev, length(Lnlist))
 #     for i in 1:length(Lnlist)
 #         p = reconstruct(p, Ln = Lnlist[i])
-#         ph = rectangle_squid(p; kw...)
+#         ph = rectangle_weaklink(p; kw...)
 #         s = spectrum(ph(phi = ϕ0), method = ArpackPackage(sigma = 1e-7, nev = nev))
 #         elist[:,i] = s.energies
     
