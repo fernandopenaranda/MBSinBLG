@@ -35,7 +35,7 @@ module MBSinBLG
     include("bounded_sys.jl")
     include("ldos.jl")
     include("spectrum.jl")
-    include("squid.jl")
+    include("weaklink.jl")
     include("save.jl")
     include("fig2.jl")
     include("fig3.jl")
