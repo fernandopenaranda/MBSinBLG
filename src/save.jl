@@ -25,7 +25,6 @@ function savespectrum(figname, p::Params, sp1, sp2)
     return path_str
 end
 
-"save data"
 function savespectrum(figname, p::Params, sp::Quantica.Spectrum)
     path_str = filesstorage_settings(figname)
     CSV.write(join([path_str,"/presets.csv"]), DataFrame(type2dict(p)))
@@ -43,6 +42,17 @@ function savespectrumvsphase(figname, p::Params, phi, ea, eb, ec, ed)
     CSV.write(join([path_str,"/cprb.csv"]),  DataFrame(eb, :auto))
     CSV.write(join([path_str,"/cprc.csv"]),  DataFrame(ec, :auto))
     CSV.write(join([path_str,"/cprd.csv"]),  DataFrame(ed, :auto))
+    return path_str
+end
+
+function savephasediagram(figname, p::Params, boundarySA, boundarySZ, μ)
+    path_str = filesstorage_settings(figname)
+    CSV.write(join([path_str,"/presets.csv"]), DataFrame(type2dict(p)))
+    CSV.write(join([path_str,"/boundarySA.csv"]),  DataFrame(x = boundarySA); delim = '\t')
+    CSV.write(join([path_str,"/boundarySZ.csv"]),  DataFrame(x = boundarySZ); delim = '\t')
+    CSV.write(join([path_str,"/mu.csv"]),  DataFrame(y = μ); delim = '\t')
+    # psi_data = DataFrame(EZ = sp2)
+    # CSV.write(join([path_str,"/EZ.csv"]), psi_data; delim = '\t')
     return path_str
 end
 

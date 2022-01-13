@@ -7,11 +7,13 @@ module MBSinBLG
 
     function __init__()
         @require CairoMakie = "13f3f980-e62b-5c42-98c6-ff1f3baf88f0" begin
-            @require  LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f" begin 
-                @require  VegaLite = "112f6efa-9a02-5b7d-90c0-432ed331239a" begin 
-                    @require  Colors = "5ae59095-9a9b-59fe-a467-6f913c188581" include("figplots.jl")
-                end
-            end
+        @require  LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f" begin 
+        @require MakieTeX = "6d554a22-29e7-47bd-aee5-0c5f06619414"  begin
+        @require  VegaLite = "112f6efa-9a02-5b7d-90c0-432ed331239a" begin 
+        @require  Colors = "5ae59095-9a9b-59fe-a467-6f913c188581" include("figplots.jl")
+        end
+        end
+        end
         end
     end
 

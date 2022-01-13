@@ -1,20 +1,20 @@
 ############################################################################################
 # Figure 2
 ############################################################################################
-
+using CairoMakie, VegaLite, MakieTeX, LaTeXStrings, Colors
 fig2plot(datapath::String; kw...) = 
-    fig2plot(CSV.read(datapath, DataFrame,  delim = '\t'); kw...)
+    fig2plot(CSV.read(joinpath(datapath,"fig2.csv"), DataFrame, delim='\t'); kw...)
 function fig2plot(data; ylims = (-10, 10))
      #remark: if you change the chemical potential in fig2 change the hline
     noto_sans = assetpath("fonts", "NotoSans-Regular.ttf")
-    noto_sans_bold = assetpath("fonts", "NotoSans-Bold.ttf")
     scene, layout = layoutscene(30, resolution = (700, 700),
         font = noto_sans, fontsize = 22) 
     tag_list = unique(data.tag)
     println(tag_list)
     numbands = maximum(data.psi)
     sub = GridLayout()
-    axes = sub[1:2, 1:2] = [Axis(scene, xlabel = L"k_y ⋅ a_0", ylabel = L"E \quad  [meV]", 
+
+    axes = sub[1:2, 1:2] = [Axis(scene, xlabel = ifelse(j == 1, "k_y  a_0", "k_x a_0"), ylabel = "E [meV]", 
         xlabelsize = 24, ylabelsize = 24) for i in 1:2 for j in 1:2]
     tightlimits!.(axes)
     layout[1, 1] = sub
@@ -127,6 +127,11 @@ end
 ############################################################################################
 # Figure 3
 ############################################################################################
+fig3plot(datapath::String) = 
+    fig3plot(CSV.read(join([datapath,"/boundarySA.csv"]), DataFrame).x, 
+    CSV.read(join([datapath,"/boundarySZ.csv"]), DataFrame).x, 
+    CSV.read(join([datapath,"/mu.csv"]), DataFrame).y)
+
 function fig3plot(boundarySZ, boundarySA, dμs)
     f = Figure()
     ax = Axis(f[1,1], xlabel = "Ez [meV]", ylabel = "μN [mev]")
@@ -145,9 +150,9 @@ function fig4plot(patha, pathb)
 end
 function fig4plot(Ez, ea, eb,  ylims = (-.1,.1))
     fig = Figure(resolution = (500, 200), font = "Times New Roman") 
-    axa = Axis(fig[1, 1],  xlabel = L"E_Z [meV]", xaxisposition = :top, 
+    axa = Axis(fig[1, 1],  xlabel = "E_Z [meV]", xaxisposition = :top, 
     xticks = ([0, 1, 2]), yticks = [-0.1,0,0.1])
-    axb = Axis(fig[1, 2],  xlabel = L"E_Z [meV]", xaxisposition = :top, 
+    axb = Axis(fig[1, 2],  xlabel = "E_Z [meV]", xaxisposition = :top, 
     xticks = ([0, 1, 2]), yticks = [-0.1,0,0.1])
     lines!(axa, Ez, ea[1,:])
     lines!(axb, Ez, eb[1,:])
@@ -173,6 +178,13 @@ end
 
 #___________________________________________________________________________________________
 # LDOS on lattice Plot 
+
+function ldosonlattice(string, color; angle = 0, Ln = 2000) 
+    psi = readfig4psi(string)
+    h0 = rectangle_randombounds_sc(Params(Ln = Ln, W = 2000), angle*π/180, 0);
+    # required in order to plot the wfs on top of the lattice.
+    return ldosonlattice(psi, h0, color)
+end
 
 ldosonlattice(psi, h0, scheme = "blues") = vlplot(h0, psi, 
     sitesize = DensityShader(), sitecolor = DensityShader(), siteopacity = 0.5,
@@ -226,11 +238,11 @@ end
 function fig5plot(Ez, α, ea, eb, ec, ed, ee,  ylims = (-.4,.4))
     fig = Figure(resolution = (500, 300), font = "Times New Roman") 
     g = fig[1:2, 1:11] = GridLayout()
-    axa = Axis(fig[1:2, 1:3],  xlabel = L"$E_Z$ [meV]")
-    axb = Axis(fig[1:2, 4:6],  xlabel = L"$E_Z$ [meV]")
-    axc = Axis(fig[1:2, 7:9],  xlabel = L"$E_Z$ [meV]")
-    axd = Axis(fig[1, 10:11],  xlabel = L"$\alpha$ [meV]", yaxisposition = :right)
-    axe = Axis(fig[2, 10:11],  xlabel = L"$\alpha$ [meV]", yaxisposition = :right)
+    axa = Axis(fig[1:2, 1:3],  xlabel = "E_Z [meV]")
+    axb = Axis(fig[1:2, 4:6],  xlabel = "E_Z [meV]")
+    axc = Axis(fig[1:2, 7:9],  xlabel = "E_Z [meV]")
+    axd = Axis(fig[1, 10:11],  xlabel = "α [meV]", yaxisposition = :right)
+    axe = Axis(fig[2, 10:11],  xlabel = "α [meV]", yaxisposition = :right)
     lines!(axa, Ez, ea[1,:])
     lines!(axb, Ez, eb[1,:])
     lines!(axc, Ez, ec[1,:])

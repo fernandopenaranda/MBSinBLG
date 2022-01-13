@@ -9,10 +9,12 @@ function runfig3()
     phz = parametric(hz, @onsite!((o; dμ = 0, dEZy = 0) -> o - dμ * σ0τz +  dEZy*σyτ0))
     mata = similarmatrix(pha, Quantica.flatten)
     matz = similarmatrix(phz, Quantica.flatten)
-    dμs = range(0., 2.5, 10)
-    boundarySA = @showprogress [optimize(fA(dμ, mata, pha), 0.00001, 2).minimizer for dμ in dμs]
-    boundarySZ = @showprogress [optimize(fZ(dμ, matb, phb), 0.00001, 2).minimizer for dμ in dμs]
-    return dμs, boundarySA, boundarySZ
+    dμs = range(-2.5, 2.5, 100)
+    boundarySA = @showprogress [optimize(fA(dμ, mata, pha), 0.00001, 2).minimizer 
+        for dμ in dμs]
+    boundarySZ = @showprogress [optimize(fZ(dμ, matz, phz), 0.00001, 2).minimizer 
+        for dμ in dμs]
+    return savephasediagram("fig3", p, boundarySA, boundarySZ, dμs)
 end
 
 function gapA( mat, ph; kw...)

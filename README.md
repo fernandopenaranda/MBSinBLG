@@ -34,7 +34,7 @@ The specifications of the machines used in our calculations are shown in said fi
 We also provide in `~/MBSinBLG/compute/plotfunctions.jl` the plotting code that generates the figures of our manuscript.
 The user just need to specify the path to the .csv file and use the corresponding plotting function, for instance, figure 7 is:
 ```
-using CairoMakie, VegaLite, LaTeXStrings, Colors
+using CairoMakie, VegaLite, LaTeXStrings, Colors, MakieTeX
 using ElectronDisplay
 using MBSinBLG
 pathfig7 = "MBSinBLG/data/fig7"

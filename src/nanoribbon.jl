@@ -32,7 +32,7 @@ penetration given by: `dxS` in units of a0.
 (`mono = false`).
     see: `Params()`, `modelS()`
 """
-function nanoribbonS(p, (nx, ny); mono = false, dxS = 10.)
+function nanoribbonS(p, (nx, ny); mono = false, dxS = 0.5)
     (; Ln, Ls, Δ, a0, τ, d, Ws) = p
     (; model0, field!) = modelS(p)
     lat = mono ? latSLG(p) : latBLG_unbounded(p)
