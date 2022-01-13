@@ -10,7 +10,7 @@ For the sake of reproducibility, we show in this repo: the code, the data files,
 Remarks:  
 
 0. All the code provided here is written in Julia (v1.0 >)
-1. Our code uses the syntax of [Quantica.jl](https://github.com/pablosanjose/Quantica)
+1. Our code uses the syntax of [Quantica.jl](https://github.com/pablosanjose/Quantica) [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](10.5281/zenodo.4762964)
 2. The data files used to build each figure can be either directly accessed at `MBSinBLG/data` or generated as we illustrate in the following:
 
 ## Installation
