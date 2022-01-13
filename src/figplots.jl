@@ -2,9 +2,9 @@
 # Figure 2
 ############################################################################################
 
-figure2(datapath::String; kw...) = 
-    figure2(CSV.read(datapath, DataFrame,  delim = '\t'); kw...)
-function figure2(data; ylims = (-10, 10))
+fig2plot(datapath::String; kw...) = 
+    fig2plot(CSV.read(datapath, DataFrame,  delim = '\t'); kw...)
+function fig2plot(data; ylims = (-10, 10))
      #remark: if you change the chemical potential in fig2 change the hline
     noto_sans = assetpath("fonts", "NotoSans-Regular.ttf")
     noto_sans_bold = assetpath("fonts", "NotoSans-Bold.ttf")
@@ -21,7 +21,7 @@ function figure2(data; ylims = (-10, 10))
     #left
     customgray = Colors.RGB(.5, .5, .5)
     for (j, ax) in enumerate(axes)
-        ax.xlabel = #L"k_y \dot a_0"
+        # ax.xlabel = #L"k_y \dot a_0"
         ax.ylabel = "E (meV)"
         tag_indexes = findall(i -> i == tag_list[j], data.tag)
         for i in 1:numbands
@@ -127,7 +127,7 @@ end
 ############################################################################################
 # Figure 3
 ############################################################################################
-function figure3(path)
+function fig3plot(boundarySZ, boundarySA, dμs)
     f = Figure()
     ax = Axis(f[1,1], xlabel = "Ez [meV]", ylabel = "μN [mev]")
     lines!(ax, boundarySZ, dμs)
