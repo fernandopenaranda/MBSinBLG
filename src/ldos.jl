@@ -27,12 +27,12 @@ function ldosonlattice_averaged_sc(p, η, angle = 0, iterations = 5; nummodes = 
     selfy = false, kw...) 
     println(nummodes)
     psi1, psi2 = ldosonlattice_rand_sc(p, η, angle, nummodes = nummodes, selfy = selfy; kw...)
-    for i in 1:iterations
-        psis = ldosonlattice_rand_sc(p, η, angle, nummodes = nummodes, selfy = selfy; kw...)
-        psi1 .+= psis[1]
-        psi2 .+= psis[2]
-    end
-    psi ./= iterations +1
+    # for i in 1:iterations
+    #     psis = ldosonlattice_rand_sc(p, η, angle, nummodes = nummodes, selfy = selfy; kw...)
+    #     psi1 .+= psis[1]
+    #     psi2 .+= psis[2]
+    # end
+    # psi ./= iterations +1
     return psi1, psi2
 end
 
