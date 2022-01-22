@@ -151,18 +151,18 @@ end
 function fig4plot(Ez, ea, eb,  ylims = (-.1,.1))
     fig = Figure(resolution = (500, 200), font = "Times New Roman") 
     axa = Axis(fig[1, 1],  xlabel = "E_Z [meV]", xaxisposition = :top, 
-    xticks = ([0, 1, 2]), yticks = [-0.1,0,0.1])
+    xticks = ([0, 1, 2]), yticks = [-0.2,0,0.2])
     axb = Axis(fig[1, 2],  xlabel = "E_Z [meV]", xaxisposition = :top, 
-    xticks = ([0, 1, 2]), yticks = [-0.1,0,0.1])
+    xticks = ([0, 1, 2]), yticks = [-0.2,0,0.2])
     lines!(axa, Ez, ea[1,:])
     lines!(axb, Ez, eb[1,:])
     mean = size(ea, 1) ÷ 2
     println(mean)
     for i in 2:size(ea, 1)
         lines!(axa, Ez, ea[i,:], color = ifelse(in(i, mean-1:mean+2), 
-            (:dodgerblue3, 1), :gray), opacity = .5)
+            (:red, 1), :gray), opacity = .5)
         lines!(axb, Ez, eb[i,:], color = ifelse(in(i, mean-1:mean+2), 
-            (:dodgerblue3, 1), :gray), opacity = .5)
+            (:red, 1), :gray), opacity = .5)
     end
     vlines!(axa, [0.6], color = :black, linewidth = .9, linestyle = :dash)
     vlines!(axb, [0.6], color = :black, linewidth = .9, linestyle = :dash)
@@ -179,12 +179,18 @@ end
 #___________________________________________________________________________________________
 # LDOS on lattice Plot 
 
-function ldosonlattice(string, color; angle = 0, Ln = 2000) 
+function ldosonlattice(string, color; angle = 0, W = 2000) 
     psi = readfig4psi(string)
-    h0 = rectangle_randombounds_sc(Params(Ln = Ln, W = 2000), angle*π/180, 0);
+    h0 = rectangle_randombounds_sc(Params(Ln = 2000, W = W), angle*π/180, 0);
     # required in order to plot the wfs on top of the lattice.
     return ldosonlattice(psi, h0, color)
 end
+
+ldosonlattice(psi, h0, scheme = "blues") = vlplot(h0, psi, 
+    sitesize = DensityShader(), sitecolor = DensityShader(), siteopacity = 0.5,
+    mindiameter = 5e-1, size = (300), colorscheme = scheme, sitestroke = nothing, #reds
+    maxdiameter =30, plotlinks = false, discretecolorscheme = :gray, 
+    labels = ("x (nm)", "y (nm)")) 
 
 ldosonlattice(psi, h0, scheme = "blues") = vlplot(h0, psi, 
     sitesize = DensityShader(), sitecolor = DensityShader(), siteopacity = 0.5,

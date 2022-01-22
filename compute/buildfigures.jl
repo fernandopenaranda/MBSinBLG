@@ -35,8 +35,8 @@ fig3plot(pathfig3)
 
 # fig4
 figab = fig4plot(pathfig4a, pathfig4b) #fig a and b
-figc = ldosonlattice(pathfig4c, "reds", Ln = 1000)
-figd = ldosonlattice(pathfig4d, "reds", Ln = 1000)
+figc = ldosonlattice(pathfig4c, "reds", W = 2700)
+figd = ldosonlattice(pathfig4d, "reds", W = 2700)
 
 # fig5
 fig5plot(pathfig5a, pathfig5b, pathfig5c, pathfig5d)
