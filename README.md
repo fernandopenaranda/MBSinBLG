@@ -2,8 +2,7 @@
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://fernandopenaranda.github.io/MBSinBLG.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://fernandopenaranda.github.io/MBSinBLG.jl/dev)
-[![Build Status](https://github.com/fernandopenaranda/MBSinBLG.jl/actions/workflows/CI.yml/badge.svg?branch=main)](https://github.com/fernandopenaranda/MBSinBLG.jl/actions/workflows/CI.yml?query=branch%3Amain)
-[![Coverage](https://codecov.io/gh/fernandopenaranda/MBSinBLG.jl/branch/main/graph/badge.svg)](https://codecov.io/gh/fernandopenaranda/MBSinBLG.jl)
+[![DOI](https://zenodo.org/badge/438209318.svg)](https://zenodo.org/badge/latestdoi/438209318)
 
 For the sake of reproducibility, we show in this repo: the code, the data files, and the plotting functions used to generate the figures in our work: *Majorana bound states in encapsulated bilayer graphene* [arXiv:2202.00593](https://arxiv.org/abs/2202.00593).
 
