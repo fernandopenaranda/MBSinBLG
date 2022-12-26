@@ -203,6 +203,27 @@ latticeplot(psi, h0) = vlplot(h0, psi,
     mindiameter = 1e-1, size = (300), colorscheme = "greys", sitestroke = nothing,
     maxthickness = 0.001, plotlinks = false, discretecolorscheme = :gray, 
     labels = ("x (nm)", "y (nm)"))
+
+
+
+ldosonlatticeup(psi, h0, scheme = "blues") = vlplot(h0, psi./norm(psi), 
+           sitesize = CurrentShader(kernel = [1 0; 0 0]), sitecolor = 
+           CurrentShader(kernel = [1 0; 0 0]), siteopacity = 0.5,
+           mindiameter = 2e-1, size = (600), colorscheme = scheme, sitestroke = nothing, #reds
+           maxdiameter =30, plotlinks = false, discretecolorscheme = :gray, 
+           labels = ("x (nm)", "y (nm)"))
+
+
+ldosonlatticedown(psi, h0, scheme = "reds") = vlplot(h0, psi./norm(psi), 
+           sitesize = CurrentShader(kernel = [0 0; 0 1]), sitecolor = 
+           CurrentShader(kernel = [0 0; 0 1]), siteopacity = 0.5,
+           linksize = CurrentShader(),
+           mindiameter = 2e-1, size = (600), colorscheme = scheme, sitestroke = nothing, #reds
+           maxdiameter =30, plotlinks = false, discretecolorscheme = :gray, 
+           labels = ("x (nm)", "y (nm)"))
+
+# o = vlplot(h, linksize = 1, colorscheme = "greys", linkcolor  = -0.3,
+#                   maxthickness = 1, maxdiameter = 1, plotsites = false, size = 600);
 #___________________________________________________________________________________________
 
 #########################################
@@ -412,6 +433,18 @@ function fig7plot(ϕs, ea, eb, ec, ed; ylims = (-0.7, 0.7))
     hideydecorations!(axd, grid = false)
     fig
 end
+
+
+
+
+
+
+
+
+
+
+
+
 
 #########
 # Extra

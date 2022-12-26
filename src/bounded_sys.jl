@@ -1,13 +1,14 @@
 "builds the hamiltonian of BLG with a random model implemented 
 on the edges of the system see `rectangle` we also add two possible SC configurations: 
-A and B in the manuscript.
+A and B in the manuscript, controlled by the kwarg: `selfy = false/true`.
 The amount of disorder is parametrized by a value `η` which determines the average number
 of atom vacancies in the edges. 
-    `η = 0` -> crystalographic edges
-we can control the rotation of the lattices w.r.t the SC leads using the keyword `θ`"
-
-function rectangle_randombounds_sc(p, θ = 0, η = 0.; selfy = false, ϕ0 = 0)
-    (; Ls, Δ, Ws) = p
+    `η = 0` -> crystalographic edges.
+We can control the rotation of the lattices w.r.t the SC leads using the keyword `θ`
+    `fermimismatch = true` makes the Fermi energies in the SC and normal regions to be
+different and given by the parameters `μS` and `μN`` in `Params()`, respectively."
+function rectangle_randombounds_sc(p, θ = 0, η = 0.; selfy = false, ϕ0 = 0, fermimismatch = false)
+    (; Ls, Δ, Ws, μN, μS) = p
     (; model0, field!, modelinter) = modelS(p)
     lat_top, lat_bot = latBLG(p, θ)
              
@@ -18,7 +19,8 @@ function rectangle_randombounds_sc(p, θ = 0, η = 0.; selfy = false, ϕ0 = 0)
         !(xmin+Ls <= r[1] <= xmax - Ls) || !(ymin+Ws <= r[2] <= ymax - Ws))
     diagphi(ϕ) = Diagonal(SA[cis(ϕ), cis(ϕ), cis(-ϕ), cis(-ϕ)])
     sCself! = @onsite!((o, r; ϕ) -> o + 
-        self_region(r) * Δ * diagphi(sign(r[1])* ϕ/4) * σyτy * diagphi(sign(r[1])*ϕ/4)')     
+        self_region(r) * Δ * diagphi(sign(r[1])* ϕ/4) * σyτy * diagphi(sign(r[1])*ϕ/4)' + 
+        ifelse(fermimismatch == false, 0, μN-μS)* σ0τz)     
     
     # RANDOM MODEL (we randomly replace sites within self_energy by vacancies) 
     vacancies(r) = sample([false, true], StatsBase.Weights([1-η, η])) * self_region(r)
@@ -58,6 +60,21 @@ function sitesinhord(latt, latb, self_region, model, modelinter)
         unitcell(mincoordination = 5), h_bot |> 
             unitcell(mincoordination = 5); coupling = modelinter))))
     return normalsites, allsites
+end
+
+
+"builds the hamiltonian of a normal circular-shaped flake of encapsulated BLG. This shaped
+introduces all type of edges in our sample."
+
+function circular_hamiltonian(p, inrad, exrad; disorder = false, selfy = false, ϕ0 = 0)
+    (; Ln, Ls, U, a0) = p
+    (; model0, field!) = modelN(p)
+    lat = latBLG_unbounded(p)
+    circular(r) = (inrad<=norm(r) <= exrad) 
+    model = ifelse(disorder == false, model0, model0+onsite(r->2*(2rand()-1)* σ0 ) 
+    ) 
+    return lat |> hamiltonian(model; orbitals = Val(2)) |>
+          unitcell(mincoordination = 5, region = circular)    
 end
 
 # Deprecated terms in H (explicit construction of the leads)
